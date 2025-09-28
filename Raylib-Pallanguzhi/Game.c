@@ -1,8 +1,7 @@
 #include "raylib.h"
+#include "raymath.h"
 
-//------------------------------------------------------------------------------------
-// Program main entry point
-//------------------------------------------------------------------------------------
+
 int main(void)
 {
     // Initialization
@@ -13,8 +12,13 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "Pallanguzhi");
     
     Texture2D ballTexture = LoadTexture("Resources/Sample Bead.png");
+    Texture2D boardTexture = LoadTexture("Resources/Board.png");
 
-    Vector2 ballPosition = { (float)screenWidth/2, (float)screenHeight/2 };
+    Vector2 ballPosition = { 100, 100 };
+    Vector2 ballStartPosition = { 100, 100 };
+    Vector2 ballEndPosition = { 150, 200 };
+    
+    float t = 0;
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -23,6 +27,14 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
+        float dt = GetFrameTime();
+        
+        t += dt;
+        if(t > 0 && t < 1)
+        {
+		ballPosition.x = Lerp(ballStartPosition.x, ballEndPosition.x, t);
+		ballPosition.y = Lerp(ballStartPosition.y, ballEndPosition.y, t);
+	}
 
         // Draw
         //----------------------------------------------------------------------------------
@@ -30,6 +42,7 @@ int main(void)
 
             ClearBackground(RAYWHITE);
 
+            DrawTexture(boardTexture,0,200, WHITE);
             DrawTextureV(ballTexture, ballPosition, WHITE);
 
         EndDrawing();
@@ -39,6 +52,7 @@ int main(void)
     // De-Initialization
     //--------------------------------------------------------------------------------------
     UnloadTexture(ballTexture);
+    UnloadTexture(boardTexture);
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
