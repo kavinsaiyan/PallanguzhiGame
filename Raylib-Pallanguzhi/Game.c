@@ -24,7 +24,7 @@ int main(void)
     Vector2 ballEndPosition = { 180, 180 + boardYOffset };
     
     //TODO: Define the board data
-    //TODO: Set a sample distribution of beads inside the slot
+    //TODO: Set a sample distribution of beads inside the slot, use GetRandomValue(int min, int max), it is available in raylib
     
     float t = 0;
 
