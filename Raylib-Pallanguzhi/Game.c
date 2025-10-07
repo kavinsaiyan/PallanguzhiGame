@@ -13,13 +13,18 @@ int main(void)
     Texture2D ballTexture = LoadTexture("Resources/Sample Bead.png");
     Texture2D boardTexture = LoadTexture("Resources/Board.png");
 
-    // first slot center is 70, 180
-    // second slot center is 180, 180
+    // board draw position offset is { 0, 200 }
+    // first slot center is 70, 180 - index 0
+    // second slot center is 180, 180 - index 1
     // last slot center is 70, 80 - index 13
-
-    Vector2 ballPosition = { 100, 100 };
-    Vector2 ballStartPosition = { 100, 100 };
-    Vector2 ballEndPosition = { 150, 200 };
+    
+    const int boardYOffset = 200/2;
+    Vector2 ballPosition = { 70, 180 + boardYOffset };
+    Vector2 ballStartPosition = { 70, 180 + boardYOffset  };
+    Vector2 ballEndPosition = { 180, 180 + boardYOffset };
+    
+    //TODO: Define the board data
+    //TODO: Set a sample distribution of beads inside the slot
     
     float t = 0;
 
@@ -47,7 +52,7 @@ int main(void)
 
             DrawTexture(boardTexture,0,200, WHITE);
             DrawTextureV(ballTexture, ballPosition, WHITE);
-			DrawCircleLinesV(ballPosition, 16,WHITE);
+			DrawCircleLinesV(ballPosition, 16,BLACK);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
