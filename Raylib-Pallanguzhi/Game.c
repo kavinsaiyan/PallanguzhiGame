@@ -1,6 +1,19 @@
 #include "raylib.h"
 #include "raymath.h"
 
+typedef struct s_Slot
+{
+    int noOfBeads;
+    Vector2 beadPositions[24];
+} Slot;
+
+typedef struct s_Board 
+{
+    int player1Score;
+    int player2Score;
+    Slot slots[14];
+} Board;
+
 int main(void)
 {
     // Initialization
