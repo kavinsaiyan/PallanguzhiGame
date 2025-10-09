@@ -7,7 +7,7 @@ LDFLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 TARGET = Game
 
 # Source files
-SRC = Game.c
+SRC = Game.c Board.c
 
 # Object files
 OBJ = $(SRC:.c=.o)

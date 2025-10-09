@@ -20,6 +20,7 @@ int main(void)
     // second slot center is 180, 180 - index 1
     // last slot center is 70, 80 - index 13
     
+    const int slotXOffset = 110;
     const int boardYOffset = 200/2;
     Vector2 ballPosition = { 70, 180 + boardYOffset };
     Vector2 ballStartPosition = { 70, 180 + boardYOffset  };
@@ -27,17 +28,7 @@ int main(void)
 
     //Initialize the board
     Board board;
-    for(int i=0; i < 8; i++)
-    {
-        board.slots[i].position.x = 70 + i * 110;
-        board.slots[i].position.y = 180 + boardYOffset;
-    }
-
-    for(int i=13; i >= 7; i--)
-    {
-        board.slots[i].position.x = 70 + (13 - i) * 110;
-        board.slots[i].position.y = 280 + boardYOffset;
-    }
+    InitializeBoard(&board, slotXOffset, boardYOffset);
     
     //TODO: Set a sample distribution of beads inside the slot, use GetRandomValue(int min, int max), it is available in raylib
     

@@ -1,4 +1,2 @@
-- Create GameState enum with player1turn, player2turn, Gameover, MainMenu, PauseMenu
-- Move Animation in BeadState to BoardState enum
 - Initialize the bead positions 
 - Render the beads 

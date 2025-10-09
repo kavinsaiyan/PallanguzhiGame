@@ -1,3 +1,5 @@
+#include "raylib.h"
+
 #ifndef BOARD_H
 #define BOARD_H
 
@@ -27,4 +29,7 @@ typedef struct s_Board
     Slot slots[14];
     Bead beads[5 * 14];
 } Board;
+
+void InitializeBoard(Board* board,int slotXOffset,int boardYOffset);
+
 #endif
