@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "Board.h"
+#include "Game.h"
 
 int main(void)
 {
@@ -23,8 +24,21 @@ int main(void)
     Vector2 ballPosition = { 70, 180 + boardYOffset };
     Vector2 ballStartPosition = { 70, 180 + boardYOffset  };
     Vector2 ballEndPosition = { 180, 180 + boardYOffset };
+
+    //Initialize the board
+    Board board;
+    for(int i=0; i < 8; i++)
+    {
+        board.slots[i].position.x = 70 + i * 110;
+        board.slots[i].position.y = 180 + boardYOffset;
+    }
+
+    for(int i=13; i >= 7; i--)
+    {
+        board.slots[i].position.x = 70 + (13 - i) * 110;
+        board.slots[i].position.y = 280 + boardYOffset;
+    }
     
-    //TODO: Define the board data
     //TODO: Set a sample distribution of beads inside the slot, use GetRandomValue(int min, int max), it is available in raylib
     
     float t = 0;
@@ -52,8 +66,9 @@ int main(void)
             ClearBackground(RAYWHITE);
 
             DrawTexture(boardTexture,0,200, WHITE);
+            for(int i=0; i<14; i++)
+                DrawCircleLinesV(board.slots[i].position, 16,BLACK);
             DrawTextureV(ballTexture, ballPosition, WHITE);
-			DrawCircleLinesV(ballPosition, 16,BLACK);
 
         EndDrawing();
         //----------------------------------------------------------------------------------

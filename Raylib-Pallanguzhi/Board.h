@@ -4,7 +4,6 @@
 typedef enum e_BeadState
 {
     InsideSlot,
-    Animating,
     CollectedByPlayer1,
     CollectedByPlayer2,
     None
