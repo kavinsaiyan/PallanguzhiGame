@@ -2,6 +2,7 @@
 #include "raymath.h"
 #include "Board.h"
 #include "Game.h"
+#include "Render.h"
 
 int main(void)
 {
@@ -15,25 +16,12 @@ int main(void)
     Texture2D ballTexture = LoadTexture("Resources/Sample Bead.png");
     Texture2D boardTexture = LoadTexture("Resources/Board.png");
 
-    // board draw position offset is { 0, 200 }
-    // first slot center is 70, 180 - index 0
-    // second slot center is 180, 180 - index 1
-    // last slot center is 70, 80 - index 13
-    
-    const int slotXOffset = 110;
-    const int boardYOffset = 200/2;
-    Vector2 ballPosition = { 70, 180 + boardYOffset };
-    Vector2 ballStartPosition = { 70, 180 + boardYOffset  };
-    Vector2 ballEndPosition = { 180, 180 + boardYOffset };
-
     //Initialize the board
     Board board;
-    InitializeBoard(&board, slotXOffset, boardYOffset);
+    InitializeBoard(&board);
     
     //TODO: Set a sample distribution of beads inside the slot, use GetRandomValue(int min, int max), it is available in raylib
     
-    float t = 0;
-
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
@@ -41,14 +29,7 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
-        float dt = GetFrameTime();
-        
-        t += dt;
-        if(t > 0 && t < 1)
-        {
-			ballPosition.x = Lerp(ballStartPosition.x, ballEndPosition.x, t);
-			ballPosition.y = Lerp(ballStartPosition.y, ballEndPosition.y, t);
-		}
+        // float dt = GetFrameTime();
 
         // Draw
         //----------------------------------------------------------------------------------
@@ -57,9 +38,14 @@ int main(void)
             ClearBackground(RAYWHITE);
 
             DrawTexture(boardTexture,0,200, WHITE);
-            for(int i=0; i<14; i++)
+            for(int i=0; i< TOTAL_SLOTS; i++)
                 DrawCircleLinesV(board.slots[i].position, 16,BLACK);
-            DrawTextureV(ballTexture, ballPosition, WHITE);
+
+            for(int i=0; i< TOTAL_BEADS; i++)
+            {
+                if(board.beads[i].renderState == Render)
+                    DrawTextureV(ballTexture, board.beads[i].position, WHITE);
+            }
 
         EndDrawing();
         //----------------------------------------------------------------------------------
