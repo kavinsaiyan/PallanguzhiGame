@@ -32,8 +32,8 @@ void InitializeBoard(Board *board)
         {
            board->beads[j].slotIndex = i;
            board->beads[j].renderState = Render;
-           board->beads[j].position.x = board->slots[i].position.x + GetRandomValue(-10,10);
-           board->beads[j].position.y = board->slots[i].position.y + GetRandomValue(-10,10);
+           board->beads[j].position.x = board->slots[i].position.x + GetRandomValue(-20,20);
+           board->beads[j].position.y = board->slots[i].position.y + GetRandomValue(-20,20);
         }
     }
 }

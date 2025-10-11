@@ -44,7 +44,9 @@ int main(void)
             for(int i=0; i< TOTAL_BEADS; i++)
             {
                 if(board.beads[i].renderState == Render)
-                    DrawTextureV(ballTexture, board.beads[i].position, WHITE);
+                {
+                    DrawTexture(ballTexture, board.beads[i].position.x - 16,board.beads[i].position.y - 16, WHITE);
+                }
             }
 
         EndDrawing();
