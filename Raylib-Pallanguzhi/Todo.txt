@@ -1,4 +1,2 @@
-- Draw selection marker for the slot.
-- Get input from keys and move around the selection marker.
-- When a slot is selected by using enter perform move.
-- Stop drawing the marker, set the game state to animating move and perform the animation.
+- Perform the animation and move the beads
+- Display the score for player1 and player2
