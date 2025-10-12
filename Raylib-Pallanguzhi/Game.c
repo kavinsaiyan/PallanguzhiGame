@@ -68,12 +68,9 @@ int main(void)
         {
             case Player1Turn:
                 //Draw the selection Texture
-                for(int i=0; i < TOTAL_SLOTS; i++)
-                {
-                    int yOffset = i < TOTAL_SLOTS / 2 ? 4 : -2;
-                    if(i == highlightedSlotIndex)
-                        DrawTexture(slotSelectorTexture,board.slots[i].position.x - 50, board.slots[i].position.y-50-yOffset,BLUE);
-                }
+                int yOffset = highlightedSlotIndex < TOTAL_SLOTS / 2 ? 4 : -2;
+                if(highlightedSlotIndex >= 0 && highlightedSlotIndex < TOTAL_SLOTS)
+                    DrawTexture(slotSelectorTexture,board.slots[highlightedSlotIndex].position.x - 50, board.slots[highlightedSlotIndex].position.y-50-yOffset,BLUE);
                 break;
             case Player2Turn: break;
             case Animating: break;
