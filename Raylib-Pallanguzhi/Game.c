@@ -15,12 +15,12 @@ int main(void)
     
     Texture2D ballTexture = LoadTexture("Resources/Sample Bead.png");
     Texture2D boardTexture = LoadTexture("Resources/Board.png");
+    Texture2D slotSelectorTexture = LoadTexture("Resources/SlotSelector.png");
 
     //Initialize the board
     Board board;
     InitializeBoard(&board);
-    
-    //TODO: Set a sample distribution of beads inside the slot, use GetRandomValue(int min, int max), it is available in raylib
+    int selectedSlotIndex = 0;
     
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -35,19 +35,22 @@ int main(void)
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-            ClearBackground(RAYWHITE);
+        ClearBackground(RAYWHITE);
 
-            DrawTexture(boardTexture,0,200, WHITE);
-            for(int i=0; i< TOTAL_SLOTS; i++)
-                DrawCircleLinesV(board.slots[i].position, 16,BLACK);
-
-            for(int i=0; i< TOTAL_BEADS; i++)
+        DrawTexture(boardTexture,0,200, WHITE);
+        for(int i=0; i< TOTAL_BEADS; i++)
+        {
+            if(board.beads[i].renderState == Render)
             {
-                if(board.beads[i].renderState == Render)
-                {
-                    DrawTexture(ballTexture, board.beads[i].position.x - 16,board.beads[i].position.y - 16, WHITE);
-                }
+                DrawTexture(ballTexture, board.beads[i].position.x - 16,board.beads[i].position.y - 16, WHITE);
             }
+        }
+
+        for(int i=0; i < TOTAL_SLOTS; i++)
+        {
+            if(i == selectedSlotIndex)
+                DrawTexture(slotSelectorTexture,board.slots[i].position.x - 50, board.slots[i].position.y-54,BLUE);
+        }
 
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -57,6 +60,7 @@ int main(void)
     //--------------------------------------------------------------------------------------
     UnloadTexture(ballTexture);
     UnloadTexture(boardTexture);
+    UnloadTexture(slotSelectorTexture);
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
