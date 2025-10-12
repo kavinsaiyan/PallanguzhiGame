@@ -37,3 +37,25 @@ void InitializeBoard(Board *board)
         }
     }
 }
+
+int GetPlayer1Score(Board *board)
+{
+    int score = 0;
+    for(int i=0;i<TOTAL_BEADS;i++)
+    {
+        if(board->beads[i].state == CollectedByPlayer1)
+           score++;
+    }
+    return score;
+}
+
+int GetPlayer2Score(Board *board)
+{
+    int score = 0;
+    for(int i=0;i<TOTAL_BEADS;i++)
+    {
+        if(board->beads[i].state == CollectedByPlayer2)
+           score++;
+    }
+    return score;
+}

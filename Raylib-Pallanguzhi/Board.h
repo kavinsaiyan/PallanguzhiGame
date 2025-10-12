@@ -33,12 +33,14 @@ typedef struct
 
 typedef struct
 {
-    int player1Score;
-    int player2Score;
     Slot slots[14];
     Bead beads[70];
 } Board;
 
 void InitializeBoard(Board* board);
+
+int GetPlayer1Score(Board* board);
+
+int GetPlayer2Score(Board* board);
 
 #endif

@@ -17,10 +17,16 @@ int main(void)
     Texture2D boardTexture = LoadTexture("Resources/Board.png");
     Texture2D slotSelectorTexture = LoadTexture("Resources/SlotSelector.png");
 
+    //Initialize Game State
+    GameState gameState = Player1Turn;
+
     //Initialize the board
     Board board;
     InitializeBoard(&board);
-    int selectedSlotIndex = 0;
+
+    //Player Input
+    int highlightedSlotIndex = 0;
+    bool player1SelectedSlot = false;
     
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -30,6 +36,18 @@ int main(void)
     {
         // Update
         // float dt = GetFrameTime();
+
+        // Get user input from keys for moving slotSelector
+        if(IsKeyPressed(KEY_RIGHT)) highlightedSlotIndex += 1;
+        if(IsKeyPressed(KEY_LEFT)) highlightedSlotIndex -= 1;
+        highlightedSlotIndex = (int)Wrap(highlightedSlotIndex,0,TOTAL_SLOTS/2);
+        
+        // Get user input for actually selecting that slot
+        if(IsKeyPressed(KEY_ENTER) && gameState == Player1Turn) 
+        {
+            player1SelectedSlot = true;
+            gameState = Animating;
+        }
 
         // Draw
         //----------------------------------------------------------------------------------
@@ -46,12 +64,23 @@ int main(void)
             }
         }
 
-        for(int i=0; i < TOTAL_SLOTS; i++)
+        switch(gameState)
         {
-            if(i == selectedSlotIndex)
-                DrawTexture(slotSelectorTexture,board.slots[i].position.x - 50, board.slots[i].position.y-54,BLUE);
+            case Player1Turn:
+                //Draw the selection Texture
+                for(int i=0; i < TOTAL_SLOTS; i++)
+                {
+                    int yOffset = i < TOTAL_SLOTS / 2 ? 4 : -2;
+                    if(i == highlightedSlotIndex)
+                        DrawTexture(slotSelectorTexture,board.slots[i].position.x - 50, board.slots[i].position.y-50-yOffset,BLUE);
+                }
+                break;
+            case Player2Turn: break;
+            case Animating: break;
+            case GameOver: break;
+            case MainMenu: break;
+            case PauseMenu: break;
         }
-
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
