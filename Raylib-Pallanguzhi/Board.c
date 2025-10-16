@@ -17,13 +17,13 @@ void InitializeBoard(Board *board)
     for(int i=0; i < 8; i++)
     {
         board->slots[i].position.x = 70 + i * SLOT_X_OFFSET;
-        board->slots[i].position.y = 180 + BORAD_Y_OFFSET;
+        board->slots[i].position.y = 176 + BORAD_Y_OFFSET;
     }
 
     for(int i=TOTAL_SLOTS; i >= 7; i--)
     {
         board->slots[i].position.x = 70 + (13 - i) * SLOT_X_OFFSET;
-        board->slots[i].position.y = 280 + BORAD_Y_OFFSET;
+        board->slots[i].position.y = 282 + BORAD_Y_OFFSET;
     }
 
     //Initalize the bead positions

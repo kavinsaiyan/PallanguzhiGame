@@ -9,7 +9,6 @@ void DrawSlotSelector(SlotSelector* slotSelector, Texture2D* slotSelectorTexture
     if(slotSelector->renderState == DontRender)
         return;
     //Draw the selection Texture
-    int yOffset = slotSelector->currentIndex < TOTAL_SLOTS / 2 ? 4 : -2;
     if(slotSelector->currentIndex >= 0 && slotSelector->currentIndex < TOTAL_SLOTS)
-        DrawTexture(*slotSelectorTexture, position.x - 50, position.y-50-yOffset, BLUE);
+        DrawTexture(*slotSelectorTexture, position.x - 50, position.y-50, BLUE);
 }

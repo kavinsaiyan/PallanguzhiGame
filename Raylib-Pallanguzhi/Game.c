@@ -4,7 +4,6 @@
 #include "Game.h"
 #include "Render.h"
 #include "SlotSelector.h"
-#include <stdio.h>
 
 int main(void)
 {
@@ -33,7 +32,7 @@ int main(void)
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
-    printf("logging using normal printf");
+    TraceLog(LOG_INFO, "logging using trace log");
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
