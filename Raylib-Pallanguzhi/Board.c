@@ -1,4 +1,5 @@
 #include "Board.h"
+#include "Render.h"
 #include "raylib.h"
 
 // board draw position offset is { 0, 200 }
@@ -36,6 +37,31 @@ void InitializeBoard(Board *board)
            board->beads[j].position.y = board->slots[i].position.y + GetRandomValue(-20,20);
         }
     }
+}
+
+void SetBeadRenderStateInSlot(Board *board,int slotIndex, RenderState renderState)
+{
+    for(int i =0; i < TOTAL_BEADS; i++)
+    {
+        if(board->beads[i].slotIndex == slotIndex)
+            board->beads[i].renderState = renderState;
+    }
+}
+
+void MoveBeadTo(Board* board, int beadIndex, int slotIndex)
+{
+    if(slotIndex < 0 || slotIndex >= TOTAL_SLOTS)
+    {
+        return;
+    }
+    if(beadIndex < 0 || beadIndex >= TOTAL_BEADS)
+    {
+        return;
+    }
+
+    board->beads[beadIndex].slotIndex = slotIndex;
+    board->beads[beadIndex].position.x = board->slots[slotIndex].position.x + GetRandomValue(-20,20);
+    board->beads[beadIndex].position.y = board->slots[slotIndex].position.y + GetRandomValue(-20,20);
 }
 
 int GetPlayer1Score(Board *board)

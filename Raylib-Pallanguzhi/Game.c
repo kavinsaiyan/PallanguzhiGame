@@ -3,6 +3,8 @@
 #include "Board.h"
 #include "Game.h"
 #include "Render.h"
+#include "SlotSelector.h"
+#include <stdio.h>
 
 int main(void)
 {
@@ -15,7 +17,7 @@ int main(void)
     
     Texture2D ballTexture = LoadTexture("Resources/Sample Bead.png");
     Texture2D boardTexture = LoadTexture("Resources/Board.png");
-    Texture2D slotSelectorTexture = LoadTexture("Resources/SlotSelector.png");
+    Texture2D slotSelectorTexture = LoadTexture(SELECTOR_TEXTURE_PATH);
 
     //Initialize Game State
     GameState gameState = Player1Turn;
@@ -25,28 +27,31 @@ int main(void)
     InitializeBoard(&board);
 
     //Player Input
-    int highlightedSlotIndex = 0;
-    bool player1SelectedSlot = false;
+    SlotSelector slotSelector;
+    slotSelector.renderState = Render;
     
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
+
+    printf("logging using normal printf");
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
-        // float dt = GetFrameTime();
+        float dt = GetFrameTime();
 
         // Get user input from keys for moving slotSelector
-        if(IsKeyPressed(KEY_RIGHT)) highlightedSlotIndex += 1;
-        if(IsKeyPressed(KEY_LEFT)) highlightedSlotIndex -= 1;
-        highlightedSlotIndex = (int)Wrap(highlightedSlotIndex,0,TOTAL_SLOTS/2);
+        if(IsKeyPressed(KEY_RIGHT)) slotSelector.currentIndex += 1;
+        if(IsKeyPressed(KEY_LEFT)) slotSelector.currentIndex -= 1;
+        slotSelector.currentIndex = (int)Wrap(slotSelector.currentIndex,0,TOTAL_SLOTS/2);
         
         // Get user input for actually selecting that slot
         if(IsKeyPressed(KEY_ENTER) && gameState == Player1Turn) 
         {
-            player1SelectedSlot = true;
             gameState = Animating;
+            SetBeadRenderStateInSlot(&board,slotSelector.currentIndex,DontRender);
+            slotSelector.renderState = DontRender;
         }
 
         // Draw
@@ -64,14 +69,12 @@ int main(void)
             }
         }
 
+        //Draw the selection Texture
+        DrawSlotSelector(&slotSelector, &slotSelectorTexture, board.slots[slotSelector.currentIndex].position);
+
         switch(gameState)
         {
-            case Player1Turn:
-                //Draw the selection Texture
-                int yOffset = highlightedSlotIndex < TOTAL_SLOTS / 2 ? 4 : -2;
-                if(highlightedSlotIndex >= 0 && highlightedSlotIndex < TOTAL_SLOTS)
-                    DrawTexture(slotSelectorTexture,board.slots[highlightedSlotIndex].position.x - 50, board.slots[highlightedSlotIndex].position.y-50-yOffset,BLUE);
-                break;
+            case Player1Turn: break;
             case Player2Turn: break;
             case Animating: break;
             case GameOver: break;

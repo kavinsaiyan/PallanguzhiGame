@@ -12,7 +12,7 @@ extern const int TOTAL_BEADS;
 
 typedef enum
 {
-    InsideSlot,
+    InsideBoard,
     CollectedByPlayer1,
     CollectedByPlayer2,
     None
@@ -38,6 +38,8 @@ typedef struct
 } Board;
 
 void InitializeBoard(Board* board);
+
+void SetBeadRenderStateInSlot(Board *board,int slotIndex, RenderState renderState);
 
 int GetPlayer1Score(Board* board);
 
