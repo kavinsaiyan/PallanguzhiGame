@@ -45,4 +45,5 @@ int GetPlayer1Score(Board* board);
 
 int GetPlayer2Score(Board* board);
 
+void DrawBoard(Board* board, Texture2D* boardTexture, Texture2D* ballTexture);
 #endif

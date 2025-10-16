@@ -59,16 +59,7 @@ int main(void)
 
         ClearBackground(RAYWHITE);
 
-        DrawTexture(boardTexture,0,200, WHITE);
-        for(int i=0; i< TOTAL_BEADS; i++)
-        {
-            if(board.beads[i].renderState == Render)
-            {
-                DrawTexture(ballTexture, board.beads[i].position.x - 16,board.beads[i].position.y - 16, WHITE);
-            }
-        }
-
-        //Draw the selection Texture
+        DrawBoard(&board, &boardTexture, &ballTexture);
         DrawSlotSelector(&slotSelector, &slotSelectorTexture, board.slots[slotSelector.currentIndex].position);
 
         switch(gameState)

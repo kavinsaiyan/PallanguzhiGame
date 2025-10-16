@@ -85,3 +85,15 @@ int GetPlayer2Score(Board *board)
     }
     return score;
 }
+
+void DrawBoard(Board* board, Texture2D* boardTexture, Texture2D* ballTexture)
+{
+    DrawTexture(*boardTexture,0,200, WHITE);
+    for(int i=0; i< TOTAL_BEADS; i++)
+    {
+        if(board->beads[i].renderState == Render)
+        {
+            DrawTexture(*ballTexture, board->beads[i].position.x - 16,board->beads[i].position.y - 16, WHITE);
+        }
+    }
+}
