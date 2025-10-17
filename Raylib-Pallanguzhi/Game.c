@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Render.h"
 #include "SlotSelector.h"
+#include "Queue.h"
 
 int main(void)
 {
@@ -20,6 +21,7 @@ int main(void)
 
     //Initialize Game State
     GameState gameState = Player1Turn;
+    Queue animQ = CreateQueue();
 
     //Initialize the board
     Board board;
@@ -28,6 +30,9 @@ int main(void)
     //Player Input
     SlotSelector slotSelector;
     slotSelector.renderState = Render;
+
+    //timer 
+    float timer = 0;
     
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -51,6 +56,23 @@ int main(void)
             gameState = Animating;
             SetBeadRenderStateInSlot(&board,slotSelector.currentIndex,DontRender);
             slotSelector.renderState = DontRender;
+            
+        }
+
+        switch(gameState)
+        {
+            case Player1Turn: break;
+            case Player2Turn: break;
+            case Animating:
+                timer += dt;
+                if(timer > 0.4f)
+                {
+                    // move one bead to next slot
+                }
+                break;
+            case GameOver: break;
+            case MainMenu: break;
+            case PauseMenu: break;
         }
 
         // Draw
@@ -62,15 +84,6 @@ int main(void)
         DrawBoard(&board, &boardTexture, &ballTexture);
         DrawSlotSelector(&slotSelector, &slotSelectorTexture, board.slots[slotSelector.currentIndex].position);
 
-        switch(gameState)
-        {
-            case Player1Turn: break;
-            case Player2Turn: break;
-            case Animating: break;
-            case GameOver: break;
-            case MainMenu: break;
-            case PauseMenu: break;
-        }
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
