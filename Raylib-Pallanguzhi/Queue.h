@@ -9,10 +9,14 @@ typedef struct {
     int* arr;
 } Queue;
 
-Queue CreateQueue();
+Queue* CreateQueue();
 
 void Enqueue(Queue* q, int element);
 
-int Dequeue(Queue* q, int element);
+void EnqueueArray(Queue* q, int* arr, int len);
+
+int Dequeue(Queue* q);
+
+void DestroyQueue(Queue* q);
 
 #endif

@@ -1,14 +1,25 @@
 #include "raylib.h"
 #include "Queue.h"
+#include <stdlib.h>
 
 const int INITIAL_MAX_QUEUE_SIZE = 50;
 
-Queue CreateQueue()
+Queue* CreateQueue()
 {
-    Queue q;
-    q.count=0;
-    int arr[INITIAL_MAX_QUEUE_SIZE];
-    q.arr = arr;
+    Queue* q = (Queue*)malloc(sizeof(Queue));
+    if(q == NULL)
+    {
+        TraceLog(LOG_ERROR, "[Queue.c/CreateQueue]: malloc failed for Queue!");
+        return NULL;
+    }
+    q->count=0;
+    q->arr = (int*)malloc(sizeof(int)*INITIAL_MAX_QUEUE_SIZE);
+    if(q->arr == NULL)
+    {
+        TraceLog(LOG_ERROR, "[Queue.c/CreateQueue]: malloc failed for Array!");
+        return NULL;
+    }
+    q->size = INITIAL_MAX_QUEUE_SIZE;
     return q;
 }
 
@@ -20,10 +31,18 @@ void Enqueue(Queue* q, int element)
         q->count++;
     }
     else
-        TraceLog(LOG_ERROR, "Queue size exceeded need resize");
+        TraceLog(LOG_ERROR, "[Queue.c/Enqueue]:Queue size exceeded need resize");
 }
 
-int Dequeue(Queue* q, int element)
+void EnqueueArray(Queue* q, int* arr, int len)
+{
+    for(int i = 0; i < len; i++)
+    {
+        Enqueue(q, arr[i]);
+    }
+}
+
+int Dequeue(Queue* q)
 {
     int res;
     if(q->count < q->size && q->count > 0)
@@ -34,6 +53,17 @@ int Dequeue(Queue* q, int element)
         q->count--;
     }
     else
-        TraceLog(LOG_ERROR, "Queue size exceeded need resize");
+        TraceLog(LOG_ERROR, "[Queue.c/Dequeue]:Queue size exceeded need resize");
     return res;
+}
+
+void DestroyQueue(Queue *q)
+{
+    if(q == NULL)
+    {
+        TraceLog(LOG_ERROR, "[Queue.c/Free]: Null is passed in!");
+        return;
+    }
+    free(q->arr);
+    free(q);
 }

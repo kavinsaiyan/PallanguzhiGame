@@ -21,7 +21,7 @@ int main(void)
 
     //Initialize Game State
     GameState gameState = Player1Turn;
-    Queue animQ = CreateQueue();
+    Queue* animQ = CreateQueue();
 
     //Initialize the board
     Board board;
@@ -56,7 +56,10 @@ int main(void)
             gameState = Animating;
             SetBeadRenderStateInSlot(&board,slotSelector.currentIndex,DontRender);
             slotSelector.renderState = DontRender;
-            
+            // Add to Queue
+            Array* arr = GetAllBeadsFrom(&board,slotSelector.currentIndex);
+            EnqueueArray(animQ, arr->arr, arr->len);
+            board.currentMoveIndex = slotSelector.currentIndex + 1;
         }
 
         switch(gameState)
@@ -67,7 +70,17 @@ int main(void)
                 timer += dt;
                 if(timer > 0.4f)
                 {
-                    // move one bead to next slot
+                    timer = 0;
+                    if(animQ->count > 0)
+                    {
+                        // move one bead to next slot
+                        int indexOfBeadToMove = Dequeue(animQ);
+                        MoveBeadTo(&board,indexOfBeadToMove);
+                    }
+                    else
+                    {
+                        TraceLog(LOG_INFO, "move intermediate end");
+                    }
                 }
                 break;
             case GameOver: break;
@@ -90,6 +103,8 @@ int main(void)
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    DestroyQueue(animQ);
+
     UnloadTexture(ballTexture);
     UnloadTexture(boardTexture);
     UnloadTexture(slotSelectorTexture);

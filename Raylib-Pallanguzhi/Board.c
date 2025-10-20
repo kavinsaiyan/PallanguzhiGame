@@ -1,6 +1,7 @@
 #include "Board.h"
 #include "Render.h"
 #include "raylib.h"
+#include "Array.h"
 
 // board draw position offset is { 0, 200 }
 // first slot center is 70, 180 - index 0
@@ -48,20 +49,29 @@ void SetBeadRenderStateInSlot(Board *board,int slotIndex, RenderState renderStat
     }
 }
 
-void MoveBeadTo(Board* board, int beadIndex, int slotIndex)
+void MoveBeadTo(Board* board, int beadIndex)
 {
+    int slotIndex = board->currentMoveIndex;
     if(slotIndex < 0 || slotIndex >= TOTAL_SLOTS)
     {
+        TraceLog(LOG_ERROR, "[Board.c/MoveBeadTo]: current slot Index is not in range : %d",slotIndex);
         return;
     }
     if(beadIndex < 0 || beadIndex >= TOTAL_BEADS)
     {
+        TraceLog(LOG_ERROR, "[Board.c/MoveBeadTo]: current bead Index is not in range : %d",beadIndex);
         return;
     }
 
     board->beads[beadIndex].slotIndex = slotIndex;
     board->beads[beadIndex].position.x = board->slots[slotIndex].position.x + GetRandomValue(-20,20);
     board->beads[beadIndex].position.y = board->slots[slotIndex].position.y + GetRandomValue(-20,20);
+
+    //move the current Move Index to next one
+    board->currentMoveIndex = (board->currentMoveIndex + 1) % TOTAL_SLOTS;
+
+    //Set Render state to render
+    board->beads[beadIndex].renderState = Render;
 }
 
 int GetPlayer1Score(Board *board)
@@ -96,4 +106,33 @@ void DrawBoard(Board* board, Texture2D* boardTexture, Texture2D* ballTexture)
             DrawTexture(*ballTexture, board->beads[i].position.x - 16,board->beads[i].position.y - 16, WHITE);
         }
     }
+}
+
+Array* GetAllBeadsFrom(Board* board, int slotIndex)
+{
+    int len = 0;
+    for(int i =0; i < TOTAL_BEADS; i++)
+    {
+        if(board->beads[i].slotIndex == slotIndex)
+            len++;
+    }
+
+    if(len == 0)
+    {
+        TraceLog(LOG_WARNING, "[Board.c/GetAllBeadsFrom]: Length is zero");
+    }
+
+    Array* arr = CreateArray(len);
+    len = 0;
+
+    for(int i =0; i < TOTAL_BEADS; i++)
+    {
+        if(board->beads[i].slotIndex == slotIndex)
+        {
+            arr->arr[len] = i;
+            len++;
+        }
+    }
+
+    return arr;
 }

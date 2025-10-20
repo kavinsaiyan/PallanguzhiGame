@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include "Render.h"
+#include "Array.h"
 
 #ifndef BOARD_H
 #define BOARD_H
@@ -35,15 +36,20 @@ typedef struct
 {
     Slot slots[14];
     Bead beads[70];
+    int currentMoveIndex;
 } Board;
 
 void InitializeBoard(Board* board);
 
 void SetBeadRenderStateInSlot(Board *board,int slotIndex, RenderState renderState);
 
+void MoveBeadTo(Board* board, int beadIndex);
+
 int GetPlayer1Score(Board* board);
 
 int GetPlayer2Score(Board* board);
 
 void DrawBoard(Board* board, Texture2D* boardTexture, Texture2D* ballTexture);
+
+Array* GetAllBeadsFrom(Board* board, int slotIndex);
 #endif
