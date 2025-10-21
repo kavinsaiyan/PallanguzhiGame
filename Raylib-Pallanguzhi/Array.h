@@ -8,5 +8,7 @@ typedef struct {
 
 Array* CreateArray(int len);
 
+void DestoryArray(Array* array);
+
 #endif
 

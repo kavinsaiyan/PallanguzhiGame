@@ -33,11 +33,10 @@ int main(void)
 
     //timer 
     float timer = 0;
+    int indexOfBeadToMove;
     
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
-
-    TraceLog(LOG_INFO, "logging using trace log");
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
@@ -60,6 +59,7 @@ int main(void)
             Array* arr = GetAllBeadsFrom(&board,slotSelector.currentIndex);
             EnqueueArray(animQ, arr->arr, arr->len);
             board.currentMoveIndex = slotSelector.currentIndex + 1;
+            DestoryArray(arr);
         }
 
         switch(gameState)
@@ -71,15 +71,36 @@ int main(void)
                 if(timer > 0.4f)
                 {
                     timer = 0;
+                    TraceLog(LOG_INFO,"next move index is %d",board.currentMoveIndex);
                     if(animQ->count > 0)
                     {
                         // move one bead to next slot
-                        int indexOfBeadToMove = Dequeue(animQ);
+                        indexOfBeadToMove = Dequeue(animQ);
                         MoveBeadTo(&board,indexOfBeadToMove);
+
+                        TraceLog(LOG_INFO,"Animqueue count is not zero");
                     }
                     else
                     {
-                        TraceLog(LOG_INFO, "move intermediate end");
+                        int beads = GetBeadCountInSlot(&board, board.currentMoveIndex);
+                        TraceLog(LOG_INFO,"Animqueue count is zero and beads in curmovindex is %d",beads);
+                        if(beads != 0)
+                        {
+                            SetBeadRenderStateInSlot(&board,board.currentMoveIndex,DontRender);
+                            // Add to Queue
+                            Array* arr = GetAllBeadsFrom(&board,board.currentMoveIndex);
+                            EnqueueArray(animQ, arr->arr, arr->len);
+                            board.currentMoveIndex = board.currentMoveIndex + 1;
+                            DestoryArray(arr);
+
+                            TraceLog(LOG_INFO, "move intermediate end");
+                        }
+                        else
+                        {
+                            //Add the next slot score current player
+                            
+                            TraceLog(LOG_INFO, "move end");
+                        }
                     }
                 }
                 break;

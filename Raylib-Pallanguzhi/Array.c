@@ -19,3 +19,9 @@ Array* CreateArray(int len)
     }
     return arr;
 }
+
+void DestoryArray(Array* array)
+{
+    free(array->arr);
+    free(array);
+}

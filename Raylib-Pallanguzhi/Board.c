@@ -136,3 +136,24 @@ Array* GetAllBeadsFrom(Board* board, int slotIndex)
 
     return arr;
 }
+
+int GetBeadCountInSlot(Board* board, int slotIndex)
+{
+    int count = 0;
+    
+    if(slotIndex < 0 || slotIndex >= TOTAL_SLOTS)
+    {
+        TraceLog(LOG_ERROR,"[Board.c/GetBeadCountInSlot]: slot index is out of range!");
+        return -1; 
+    }
+
+
+    for(int i=0; i < TOTAL_BEADS; i++)
+    {
+        if(board->beads[i].slotIndex == slotIndex)
+        {
+            count++;
+        }
+    }
+    return count;
+}

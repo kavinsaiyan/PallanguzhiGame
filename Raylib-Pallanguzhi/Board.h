@@ -52,4 +52,6 @@ int GetPlayer2Score(Board* board);
 void DrawBoard(Board* board, Texture2D* boardTexture, Texture2D* ballTexture);
 
 Array* GetAllBeadsFrom(Board* board, int slotIndex);
+
+int GetBeadCountInSlot(Board* board, int slotIndex);
 #endif
