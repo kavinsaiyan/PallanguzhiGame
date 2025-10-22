@@ -30,6 +30,7 @@ int main(void)
 
     //Player Input
     SlotSelector slotSelector;
+    slotSelector.currentIndex =(int)(TOTAL_SLOTS * 0.75f);
     slotSelector.renderState = Render;
 
     //timer 
