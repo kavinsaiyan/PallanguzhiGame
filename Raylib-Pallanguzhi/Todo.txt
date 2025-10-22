@@ -1,2 +1,7 @@
-- Perform the animation and move the beads
-- Display the score for player1 and player2
+- Upon beads < 1, end game
+- Display winner of game, and give options to retry
+- Need Home menu
+- Pause Menu
+- Get Touch input for the beads (Mouse click)
+- Add audio for click and distribution of beads, add BG music 
+- Build for android
