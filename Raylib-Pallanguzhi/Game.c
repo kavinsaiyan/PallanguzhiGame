@@ -46,9 +46,9 @@ int main(void)
         float dt = GetFrameTime();
 
         // Get user input from keys for moving slotSelector
-        if(IsKeyPressed(KEY_RIGHT)) slotSelector.currentIndex += 1;
-        if(IsKeyPressed(KEY_LEFT)) slotSelector.currentIndex -= 1;
-        slotSelector.currentIndex = (int)Wrap(slotSelector.currentIndex,0,TOTAL_SLOTS/2);
+        if(IsKeyPressed(KEY_RIGHT)) slotSelector.currentIndex -= 1;
+        if(IsKeyPressed(KEY_LEFT)) slotSelector.currentIndex += 1;
+        slotSelector.currentIndex = (int)Wrap(slotSelector.currentIndex,TOTAL_SLOTS/2,TOTAL_SLOTS);
         
         // Get user input for actually selecting that slot
         if(IsKeyPressed(KEY_ENTER) && gameState == PlayerMove && playerTurn == Player1Turn) 
@@ -59,7 +59,7 @@ int main(void)
             // Add to Queue
             Array* arr = GetAllBeadsFrom(&board,slotSelector.currentIndex);
             EnqueueArray(animQ, arr->arr, arr->len);
-            board.currentMoveIndex = (slotSelector.currentIndex + 1)%TOTAL_SLOTS;
+            board.currentMoveIndex = (int)Wrap(slotSelector.currentIndex - 1,0,TOTAL_SLOTS);
             DestoryArray(arr);
         }
 
@@ -90,7 +90,7 @@ int main(void)
                             // Add to Queue
                             Array* arr = GetAllBeadsFrom(&board,board.currentMoveIndex);
                             EnqueueArray(animQ, arr->arr, arr->len);
-                            board.currentMoveIndex = (board.currentMoveIndex + 1) % TOTAL_SLOTS;
+                            board.currentMoveIndex = (int)Wrap(board.currentMoveIndex - 1,0,TOTAL_SLOTS);
                             DestoryArray(arr);
 
                             TraceLog(LOG_INFO, "move intermediate end");
@@ -98,7 +98,7 @@ int main(void)
                         else
                         {
                             //Add the next slot score current player
-                            AddBeadsToPlayer(&board,playerTurn,board.currentMoveIndex+1);
+                            AddBeadsToPlayer(&board,playerTurn,board.currentMoveIndex-1);
                             UpdatePlayerScore(&board);
                             playerTurn = playerTurn == Player1Turn ? Player2Turn : Player1Turn;
                             gameState = PlayerMove;

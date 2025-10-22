@@ -1,6 +1,7 @@
 #include "Board.h"
 #include "Render.h"
 #include "raylib.h"
+#include "raymath.h"
 #include "Array.h"
 
 // board draw position offset is { 0, 200 }
@@ -71,7 +72,7 @@ void MoveBeadTo(Board* board, int beadIndex)
     board->beads[beadIndex].position.y = board->slots[slotIndex].position.y + GetRandomValue(-20,20);
 
     //move the current Move Index to next one
-    board->currentMoveIndex = (board->currentMoveIndex + 1) % TOTAL_SLOTS;
+    board->currentMoveIndex = (int)Wrap(board->currentMoveIndex - 1,0,TOTAL_SLOTS);
 
     //Set Render state to render
     board->beads[beadIndex].renderState = Render;
