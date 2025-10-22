@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "Array.h"
+#include "stddef.h"
 
 // board draw position offset is { 0, 200 }
 // first slot center is 70, 180 - index 0
@@ -168,4 +169,55 @@ int GetBeadCountInSlot(Board* board, int slotIndex)
         }
     }
     return count;
+}
+
+Array* GetSlotsThatHaveBeads(Board* board, int startSlot, int endSlot)
+{
+    if(startSlot < 0 || startSlot >= TOTAL_SLOTS)
+    {
+        TraceLog(LOG_ERROR, "The start slot index is out range:%d",startSlot);
+        return NULL;
+    }
+    if(endSlot < 0 || endSlot >= TOTAL_SLOTS)
+    {
+        TraceLog(LOG_ERROR, "The end slot index is out range:%d",endSlot);
+        return NULL;
+    }
+
+    if(startSlot >= endSlot)
+    {
+        TraceLog(LOG_ERROR, "The start slot : %d needs to be greater than end slot : %d",startSlot,endSlot); 
+        return NULL;
+    }
+    int len = 0;
+    int hashLength = endSlot - startSlot + 1;
+    int hash[hashLength];
+    for(int i=0; i < TOTAL_BEADS; i++)
+    {
+        if(board->beads[i].slotIndex >= startSlot && board->beads[i].slotIndex <= endSlot)
+        {
+            hash[board->beads[i].slotIndex - startSlot]++;
+        }
+    }
+
+    for(int i=0; i < hashLength; i++)
+    {
+        if(hash[i] > 0)
+            len++;
+    }
+
+    Array* arr = CreateArray(len);
+    arr->len = len;
+    len = 0;
+
+    for(int i=0; i < hashLength; i++)
+    {
+        if(hash[i] > 0)
+        {
+            arr->arr[len] = i+startSlot;
+            len++;
+        } 
+    }
+
+    return arr;
 }

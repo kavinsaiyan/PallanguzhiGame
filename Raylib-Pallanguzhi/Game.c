@@ -1,10 +1,10 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "Board.h"
-#include "Game.h"
 #include "Render.h"
 #include "SlotSelector.h"
 #include "Queue.h"
+#include "Game.h"
 
 int main(void)
 {
@@ -55,21 +55,31 @@ int main(void)
         if(IsKeyPressed(KEY_ENTER) && gameState == PlayerMove && playerTurn == Player1Turn) 
         {
             gameState = Animating;
-            SetBeadRenderStateInSlot(&board,slotSelector.currentIndex,DontRender);
             slotSelector.renderState = DontRender;
-            // Add to Queue
-            Array* arr = GetAllBeadsFrom(&board,slotSelector.currentIndex);
-            EnqueueArray(animQ, arr->arr, arr->len);
-            board.currentMoveIndex = (int)Wrap(slotSelector.currentIndex - 1,0,TOTAL_SLOTS);
-            DestoryArray(arr);
+            StartMove(&board,animQ,slotSelector.currentIndex);
         }
 
         switch(gameState)
         {
-            case PlayerMove: break;
+            case PlayerMove: 
+                if(playerTurn == Player2Turn)
+                {
+                    //AI move range (0,TOTAL_SLOTS/2)
+                    //Need to know all indices that have beads in them
+                    Array* arr = GetSlotsThatHaveBeads(&board,0,TOTAL_SLOTS/2);
+                    //for now choose randomly
+                    int rand = GetRandomValue(0,arr->len);
+                    board.currentMoveIndex = arr->arr[rand];
+                    TraceLog(LOG_INFO,"AI chooses %d slot index randomly", arr->arr[rand]);
+                    DestroyArray(arr);
+                    //Change Gamestate
+                    gameState = PauseMenu;
+                    //StartMove(&board,animQ,board.currentMoveIndex);
+                }
+                break;
             case Animating:
                 timer += dt;
-                if(timer > 0.4f)
+                if(timer > 0.1f)
                 {
                     timer = 0;
                     TraceLog(LOG_INFO,"next move index is %d",board.currentMoveIndex);
@@ -89,10 +99,10 @@ int main(void)
                         {
                             SetBeadRenderStateInSlot(&board,board.currentMoveIndex,DontRender);
                             // Add to Queue
-                            Array* arr = GetAllBeadsFrom(&board,board.currentMoveIndex);
-                            EnqueueArray(animQ, arr->arr, arr->len);
+                            Array* tempArr = GetAllBeadsFrom(&board,board.currentMoveIndex);
+                            EnqueueArray(animQ, tempArr->arr, tempArr->len);
                             board.currentMoveIndex = (int)Wrap(board.currentMoveIndex - 1,0,TOTAL_SLOTS);
-                            DestoryArray(arr);
+                            DestroyArray(tempArr);
 
                             TraceLog(LOG_INFO, "move intermediate end");
                         }
@@ -139,4 +149,13 @@ int main(void)
     //--------------------------------------------------------------------------------------
 
     return 0;
+}
+
+void StartMove(Board* board, Queue* animQ, int currentIndex)
+{
+    SetBeadRenderStateInSlot(board,currentIndex,DontRender);
+    Array* arr = GetAllBeadsFrom(board,currentIndex);
+    EnqueueArray(animQ, arr->arr, arr->len);
+    board->currentMoveIndex = (int)Wrap(currentIndex - 1,0,TOTAL_SLOTS);
+    DestroyArray(arr);
 }

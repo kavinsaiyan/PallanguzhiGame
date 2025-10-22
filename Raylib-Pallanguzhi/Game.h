@@ -16,4 +16,5 @@ typedef enum
     Player2Turn = 1,
 } PlayerTurn;
 
+void StartMove(Board* board, Queue* animQ, int currentIndex);
 #endif

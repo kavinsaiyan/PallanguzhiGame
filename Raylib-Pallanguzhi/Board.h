@@ -56,4 +56,6 @@ Array* GetAllBeadsFrom(Board* board, int slotIndex);
 int GetBeadCountInSlot(Board* board, int slotIndex);
 
 void AddBeadsToPlayer(Board* board,int playerIndex, int slotIndex);
+
+Array* GetSlotsThatHaveBeads(Board* board, int startSlot, int endSlot);
 #endif
