@@ -68,13 +68,14 @@ int main(void)
                     //Need to know all indices that have beads in them
                     Array* arr = GetSlotsThatHaveBeads(&board,0,TOTAL_SLOTS/2);
                     //for now choose randomly
-                    int rand = GetRandomValue(0,arr->len);
+                    int rand = GetRandomValue(0,arr->len-1);
                     board.currentMoveIndex = arr->arr[rand];
-                    TraceLog(LOG_INFO,"AI chooses %d slot index randomly", arr->arr[rand]);
+                    TraceLog(LOG_INFO,"AI chooses %d slot index randomly and rand index is %d", arr->arr[rand], rand);
                     DestroyArray(arr);
                     //Change Gamestate
-                    gameState = PauseMenu;
-                    //StartMove(&board,animQ,board.currentMoveIndex);
+                    //gameState = PauseMenu;
+                    gameState = Animating;
+                    StartMove(&board,animQ,board.currentMoveIndex);
                 }
                 break;
             case Animating:
@@ -89,7 +90,7 @@ int main(void)
                         indexOfBeadToMove = Dequeue(animQ);
                         MoveBeadTo(&board,indexOfBeadToMove);
 
-                        TraceLog(LOG_INFO,"Animqueue count is not zero");
+                        //TraceLog(LOG_INFO,"Animqueue count is not zero");
                     }
                     else
                     {
@@ -104,15 +105,20 @@ int main(void)
                             board.currentMoveIndex = (int)Wrap(board.currentMoveIndex - 1,0,TOTAL_SLOTS);
                             DestroyArray(tempArr);
 
-                            TraceLog(LOG_INFO, "move intermediate end");
+                            //TraceLog(LOG_INFO, "move intermediate end");
                         }
                         else
                         {
                             //Add the next slot score current player
-                            AddBeadsToPlayer(&board,playerTurn,board.currentMoveIndex-1);
+                            TraceLog(LOG_INFO, "current player is %d",(int)playerTurn);
+                            board.currentMoveIndex = (int)Wrap(board.currentMoveIndex - 1,0,TOTAL_SLOTS);
+                            AddBeadsToPlayer(&board,playerTurn,board.currentMoveIndex);
                             UpdatePlayerScore(&board);
+
                             playerTurn = playerTurn == Player1Turn ? Player2Turn : Player1Turn;
                             gameState = PlayerMove;
+                            if(playerTurn == Player1Turn)
+                                slotSelector.renderState = Render;
                             TraceLog(LOG_INFO, "move end");
                         }
                     }

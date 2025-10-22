@@ -39,6 +39,7 @@ void InitializeBoard(Board *board)
         {
            board->beads[j].slotIndex = i;
            board->beads[j].renderState = Render;
+           board->beads[j].state = InsideBoard;
            board->beads[j].position.x = board->slots[i].position.x + GetRandomValue(-20,20);
            board->beads[j].position.y = board->slots[i].position.y + GetRandomValue(-20,20);
         }
@@ -49,7 +50,7 @@ void SetBeadRenderStateInSlot(Board *board,int slotIndex, RenderState renderStat
 {
     for(int i =0; i < TOTAL_BEADS; i++)
     {
-        if(board->beads[i].slotIndex == slotIndex)
+        if(board->beads[i].slotIndex == slotIndex && board->beads[i].state == InsideBoard)
             board->beads[i].renderState = renderState;
     }
 }
@@ -84,7 +85,7 @@ void AddBeadsToPlayer(Board* board,int playerIndex, int slotIndex)
     int count=0;
     for(int i=0;i<TOTAL_BEADS;i++)
     {
-        if(board->beads[i].slotIndex == slotIndex)
+        if(board->beads[i].slotIndex == slotIndex && board->beads[i].state == InsideBoard)
         {
             count++;
             board->beads[i].state = (playerIndex == 0) ? CollectedByPlayer1 : CollectedByPlayer2;
@@ -102,7 +103,7 @@ void UpdatePlayerScore(Board *board)
     {
         if(board->beads[i].state == CollectedByPlayer1)
            score1++;
-        else if(board->beads[i].state == CollectedByPlayer1)
+        else if(board->beads[i].state == CollectedByPlayer2)
            score2++;
     }
     board->player1Score = score1;
@@ -126,7 +127,7 @@ Array* GetAllBeadsFrom(Board* board, int slotIndex)
     int len = 0;
     for(int i =0; i < TOTAL_BEADS; i++)
     {
-        if(board->beads[i].slotIndex == slotIndex)
+        if(board->beads[i].slotIndex == slotIndex && board->beads[i].state == InsideBoard)
             len++;
     }
 
@@ -140,7 +141,7 @@ Array* GetAllBeadsFrom(Board* board, int slotIndex)
 
     for(int i =0; i < TOTAL_BEADS; i++)
     {
-        if(board->beads[i].slotIndex == slotIndex)
+        if(board->beads[i].slotIndex == slotIndex && board->beads[i].state == InsideBoard)
         {
             arr->arr[len] = i;
             len++;
@@ -163,7 +164,7 @@ int GetBeadCountInSlot(Board* board, int slotIndex)
 
     for(int i=0; i < TOTAL_BEADS; i++)
     {
-        if(board->beads[i].slotIndex == slotIndex)
+        if(board->beads[i].slotIndex == slotIndex && board->beads[i].state == InsideBoard)
         {
             count++;
         }
@@ -190,11 +191,15 @@ Array* GetSlotsThatHaveBeads(Board* board, int startSlot, int endSlot)
         return NULL;
     }
     int len = 0;
-    int hashLength = endSlot - startSlot + 1;
+    int hashLength = endSlot - startSlot;
     int hash[hashLength];
+    for(int i = 0; i < hashLength; i++)
+        hash[i] = 0;
+
     for(int i=0; i < TOTAL_BEADS; i++)
     {
-        if(board->beads[i].slotIndex >= startSlot && board->beads[i].slotIndex <= endSlot)
+        if(board->beads[i].slotIndex >= startSlot && board->beads[i].slotIndex < endSlot
+            && board->beads[i].state == InsideBoard)
         {
             hash[board->beads[i].slotIndex - startSlot]++;
         }
@@ -207,14 +212,15 @@ Array* GetSlotsThatHaveBeads(Board* board, int startSlot, int endSlot)
     }
 
     Array* arr = CreateArray(len);
-    arr->len = len;
     len = 0;
 
+    TraceLog(LOG_INFO, "len of hash is %d",arr->len);
     for(int i=0; i < hashLength; i++)
     {
         if(hash[i] > 0)
         {
             arr->arr[len] = i+startSlot;
+            TraceLog(LOG_INFO, "bead cound > 0 in slot index :  %d",arr->arr[len]); 
             len++;
         } 
     }
