@@ -3,12 +3,17 @@
 
 typedef enum
 {
-    Player1Turn,
-    Player2Turn,
+    PlayerMove,
     Animating,
     GameOver,
     MainMenu,
     PauseMenu
 } GameState;
+
+typedef enum 
+{
+    Player1Turn = 0,
+    Player2Turn = 1,
+} PlayerTurn;
 
 #endif

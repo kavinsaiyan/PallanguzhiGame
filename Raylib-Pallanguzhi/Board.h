@@ -37,6 +37,8 @@ typedef struct
     Slot slots[14];
     Bead beads[70];
     int currentMoveIndex;
+    int player1Score;
+    int player2Score;
 } Board;
 
 void InitializeBoard(Board* board);
@@ -45,13 +47,13 @@ void SetBeadRenderStateInSlot(Board *board,int slotIndex, RenderState renderStat
 
 void MoveBeadTo(Board* board, int beadIndex);
 
-int GetPlayer1Score(Board* board);
-
-int GetPlayer2Score(Board* board);
+void UpdatePlayerScore(Board *board);
 
 void DrawBoard(Board* board, Texture2D* boardTexture, Texture2D* ballTexture);
 
 Array* GetAllBeadsFrom(Board* board, int slotIndex);
 
 int GetBeadCountInSlot(Board* board, int slotIndex);
+
+void AddBeadsToPlayer(Board* board,int playerIndex, int slotIndex);
 #endif

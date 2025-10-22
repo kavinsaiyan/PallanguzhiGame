@@ -15,6 +15,9 @@ const int TOTAL_BEADS = 5 * 7 * 2;
 
 void InitializeBoard(Board *board)
 {
+    board->player1Score = 0;
+    board->player2Score = 0;
+
     for(int i=0; i < 8; i++)
     {
         board->slots[i].position.x = 70 + i * SLOT_X_OFFSET;
@@ -74,26 +77,34 @@ void MoveBeadTo(Board* board, int beadIndex)
     board->beads[beadIndex].renderState = Render;
 }
 
-int GetPlayer1Score(Board *board)
+void AddBeadsToPlayer(Board* board,int playerIndex, int slotIndex)
 {
-    int score = 0;
+    int count=0;
+    for(int i=0;i<TOTAL_BEADS;i++)
+    {
+        if(board->beads[i].slotIndex == slotIndex)
+        {
+            count++;
+            board->beads[i].state = (playerIndex == 0) ? CollectedByPlayer1 : CollectedByPlayer2;
+            board->beads[i].renderState = DontRender;
+        }
+    }
+    TraceLog(LOG_INFO,"beads added are %d",count);
+}
+
+void UpdatePlayerScore(Board *board)
+{
+    int score1 = 0;
+    int score2 = 0;
     for(int i=0;i<TOTAL_BEADS;i++)
     {
         if(board->beads[i].state == CollectedByPlayer1)
-           score++;
+           score1++;
+        else if(board->beads[i].state == CollectedByPlayer1)
+           score2++;
     }
-    return score;
-}
-
-int GetPlayer2Score(Board *board)
-{
-    int score = 0;
-    for(int i=0;i<TOTAL_BEADS;i++)
-    {
-        if(board->beads[i].state == CollectedByPlayer2)
-           score++;
-    }
-    return score;
+    board->player1Score = score1;
+    board->player2Score = score2;
 }
 
 void DrawBoard(Board* board, Texture2D* boardTexture, Texture2D* ballTexture)

@@ -20,7 +20,8 @@ int main(void)
     Texture2D slotSelectorTexture = LoadTexture(SELECTOR_TEXTURE_PATH);
 
     //Initialize Game State
-    GameState gameState = Player1Turn;
+    GameState gameState = PlayerMove;
+    PlayerTurn playerTurn = Player1Turn;
     Queue* animQ = CreateQueue();
 
     //Initialize the board
@@ -50,7 +51,7 @@ int main(void)
         slotSelector.currentIndex = (int)Wrap(slotSelector.currentIndex,0,TOTAL_SLOTS/2);
         
         // Get user input for actually selecting that slot
-        if(IsKeyPressed(KEY_ENTER) && gameState == Player1Turn) 
+        if(IsKeyPressed(KEY_ENTER) && gameState == PlayerMove && playerTurn == Player1Turn) 
         {
             gameState = Animating;
             SetBeadRenderStateInSlot(&board,slotSelector.currentIndex,DontRender);
@@ -58,14 +59,13 @@ int main(void)
             // Add to Queue
             Array* arr = GetAllBeadsFrom(&board,slotSelector.currentIndex);
             EnqueueArray(animQ, arr->arr, arr->len);
-            board.currentMoveIndex = slotSelector.currentIndex + 1;
+            board.currentMoveIndex = (slotSelector.currentIndex + 1)%TOTAL_SLOTS;
             DestoryArray(arr);
         }
 
         switch(gameState)
         {
-            case Player1Turn: break;
-            case Player2Turn: break;
+            case PlayerMove: break;
             case Animating:
                 timer += dt;
                 if(timer > 0.4f)
@@ -90,7 +90,7 @@ int main(void)
                             // Add to Queue
                             Array* arr = GetAllBeadsFrom(&board,board.currentMoveIndex);
                             EnqueueArray(animQ, arr->arr, arr->len);
-                            board.currentMoveIndex = board.currentMoveIndex + 1;
+                            board.currentMoveIndex = (board.currentMoveIndex + 1) % TOTAL_SLOTS;
                             DestoryArray(arr);
 
                             TraceLog(LOG_INFO, "move intermediate end");
@@ -98,7 +98,10 @@ int main(void)
                         else
                         {
                             //Add the next slot score current player
-                            
+                            AddBeadsToPlayer(&board,playerTurn,board.currentMoveIndex+1);
+                            UpdatePlayerScore(&board);
+                            playerTurn = playerTurn == Player1Turn ? Player2Turn : Player1Turn;
+                            gameState = PlayerMove;
                             TraceLog(LOG_INFO, "move end");
                         }
                     }
@@ -117,6 +120,8 @@ int main(void)
 
         DrawBoard(&board, &boardTexture, &ballTexture);
         DrawSlotSelector(&slotSelector, &slotSelectorTexture, board.slots[slotSelector.currentIndex].position);
+        DrawText(TextFormat("Player 1 Score : %d",board.player1Score),0,100,16,BLACK);
+        DrawText(TextFormat("Player 2 Score : %d",board.player2Score),0,120,16,BLACK);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
