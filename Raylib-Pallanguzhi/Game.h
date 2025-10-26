@@ -16,5 +16,6 @@ typedef enum
     Player2Turn = 1,
 } PlayerTurn;
 
-void StartMove(Board* board, Queue* animQ, int currentIndex);
+void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex);
+void DrawBoardGame(Board* board,SlotSelector* slotSelector, Texture2D* boardTexture, Texture2D* ballTexture, Texture2D* slotSelectorTexture);
 #endif

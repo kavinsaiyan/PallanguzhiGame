@@ -54,9 +54,8 @@ int main(void)
         // Get user input for actually selecting that slot
         if(IsKeyPressed(KEY_ENTER) && gameState == PlayerMove && playerTurn == Player1Turn) 
         {
-            gameState = Animating;
             slotSelector.renderState = DontRender;
-            StartMove(&board,animQ,slotSelector.currentIndex);
+            StartMove(&gameState,&board,animQ,slotSelector.currentIndex);
         }
 
         switch(gameState)
@@ -73,9 +72,7 @@ int main(void)
                     TraceLog(LOG_INFO,"AI chooses %d slot index randomly and rand index is %d", arr->arr[rand], rand);
                     DestroyArray(arr);
                     //Change Gamestate
-                    //gameState = PauseMenu;
-                    gameState = Animating;
-                    StartMove(&board,animQ,board.currentMoveIndex);
+                    StartMove(&gameState,&board,animQ,board.currentMoveIndex);
                 }
                 break;
             case Animating:
@@ -134,12 +131,18 @@ int main(void)
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
-
-        DrawBoard(&board, &boardTexture, &ballTexture);
-        DrawSlotSelector(&slotSelector, &slotSelectorTexture, board.slots[slotSelector.currentIndex].position);
-        DrawText(TextFormat("Player 1 Score : %d",board.player1Score),0,100,16,BLACK);
-        DrawText(TextFormat("Player 2 Score : %d",board.player2Score),0,120,16,BLACK);
-
+        switch(gameState)
+        {
+            case Animating:
+            case PlayerMove:
+                DrawBoardGame(&board,&slotSelector,&boardTexture,&ballTexture,&slotSelectorTexture);
+                break;
+            case GameOver:
+                break;
+            case MainMenu:
+            case PauseMenu:
+                break;
+        }
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
@@ -157,11 +160,21 @@ int main(void)
     return 0;
 }
 
-void StartMove(Board* board, Queue* animQ, int currentIndex)
+void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex)
 {
+    //*gameState = PauseMenu;
+    *gameState = Animating;
     SetBeadRenderStateInSlot(board,currentIndex,DontRender);
     Array* arr = GetAllBeadsFrom(board,currentIndex);
     EnqueueArray(animQ, arr->arr, arr->len);
     board->currentMoveIndex = (int)Wrap(currentIndex - 1,0,TOTAL_SLOTS);
     DestroyArray(arr);
+}
+
+void DrawBoardGame(Board* board,SlotSelector* slotSelector, Texture2D* boardTexture, Texture2D* ballTexture, Texture2D* slotSelectorTexture)
+{
+    DrawBoard(board, boardTexture, ballTexture);
+    DrawSlotSelector(slotSelector, slotSelectorTexture, board->slots[slotSelector->currentIndex].position);
+    DrawText(TextFormat("Player 1 Score : %d",board->player1Score),0,100,16,BLACK);
+    DrawText(TextFormat("Player 2 Score : %d",board->player2Score),0,120,16,BLACK);
 }
