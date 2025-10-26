@@ -1,4 +1,3 @@
-- Upon beads < 1, end game
 - Display winner of game, and give options to retry
 - Need Home menu
 - Pause Menu
