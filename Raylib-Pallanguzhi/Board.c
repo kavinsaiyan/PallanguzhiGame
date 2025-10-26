@@ -227,3 +227,27 @@ Array* GetSlotsThatHaveBeads(Board* board, int startSlot, int endSlot)
 
     return arr;
 }
+
+
+int HasAnyPlayerWon(Board* board)
+{
+    int res = -1;
+    
+    //Get the total no of beads inside the board
+    int total = 0;
+    for(int i=0;i<TOTAL_BEADS;i++)
+    {
+       if(board->beads[i].state == InsideBoard)
+            total++; 
+    }
+
+    //If the total no of beads is less than the difference in score between the player then one of them has won
+    int diffInScore = board->player1Score - board->player2Score;
+    diffInScore = diffInScore < 0 ? -diffInScore: diffInScore;
+    if(diffInScore > total)
+    {
+        res = board->player1Score > board->player2Score ? 0 : 1;// 0 is player1 and 1 is player 2
+    }
+
+    return res;
+}

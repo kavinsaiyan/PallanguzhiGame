@@ -20,8 +20,8 @@ int main(void)
     Texture2D slotSelectorTexture = LoadTexture(SELECTOR_TEXTURE_PATH);
 
     //Initialize Game State
-    GameState gameState = PlayerMove;
-    PlayerTurn playerTurn = Player1Turn;
+    GameStateData gameStateData;
+    InitializeGameStateData(&gameStateData);
     Queue* animQ = CreateQueue();
 
     //Initialize the board
@@ -52,16 +52,24 @@ int main(void)
         slotSelector.currentIndex = (int)Wrap(slotSelector.currentIndex,TOTAL_SLOTS/2,TOTAL_SLOTS);
         
         // Get user input for actually selecting that slot
-        if(IsKeyPressed(KEY_ENTER) && gameState == PlayerMove && playerTurn == Player1Turn) 
+        if(IsKeyPressed(KEY_ENTER) && gameStateData.state == PlayerMove && gameStateData.playerTurn == Player1Turn) 
         {
             slotSelector.renderState = DontRender;
-            StartMove(&gameState,&board,animQ,slotSelector.currentIndex);
+            StartMove(&gameStateData.state,&board,animQ,slotSelector.currentIndex);
         }
 
-        switch(gameState)
+        switch(gameStateData.state)
         {
             case PlayerMove: 
-                if(playerTurn == Player2Turn)
+                
+                gameStateData.playerWon = HasAnyPlayerWon(&board);
+                if(gameStateData.playerWon != -1)
+                {
+                    gameStateData.state = GameOver;
+                    break;
+                }
+
+                if(gameStateData.playerTurn == Player2Turn)
                 {
                     //AI move range (0,TOTAL_SLOTS/2)
                     //Need to know all indices that have beads in them
@@ -71,8 +79,7 @@ int main(void)
                     board.currentMoveIndex = arr->arr[rand];
                     TraceLog(LOG_INFO,"AI chooses %d slot index randomly and rand index is %d", arr->arr[rand], rand);
                     DestroyArray(arr);
-                    //Change Gamestate
-                    StartMove(&gameState,&board,animQ,board.currentMoveIndex);
+                    StartMove(&gameStateData.state,&board,animQ,board.currentMoveIndex);
                 }
                 break;
             case Animating:
@@ -107,14 +114,14 @@ int main(void)
                         else
                         {
                             //Add the next slot score current player
-                            TraceLog(LOG_INFO, "current player is %d",(int)playerTurn);
+                            TraceLog(LOG_INFO, "current player is %d",(int)gameStateData.playerTurn);
                             board.currentMoveIndex = (int)Wrap(board.currentMoveIndex - 1,0,TOTAL_SLOTS);
-                            AddBeadsToPlayer(&board,playerTurn,board.currentMoveIndex);
+                            AddBeadsToPlayer(&board,gameStateData.playerTurn,board.currentMoveIndex);
                             UpdatePlayerScore(&board);
 
-                            playerTurn = playerTurn == Player1Turn ? Player2Turn : Player1Turn;
-                            gameState = PlayerMove;
-                            if(playerTurn == Player1Turn)
+                            gameStateData.playerTurn = gameStateData.playerTurn == Player1Turn ? Player2Turn : Player1Turn;
+                            gameStateData.state = PlayerMove;
+                            if(gameStateData.playerTurn == Player1Turn)
                                 slotSelector.renderState = Render;
                             TraceLog(LOG_INFO, "move end");
                         }
@@ -131,13 +138,19 @@ int main(void)
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
-        switch(gameState)
+        switch(gameStateData.state)
         {
             case Animating:
             case PlayerMove:
                 DrawBoardGame(&board,&slotSelector,&boardTexture,&ballTexture,&slotSelectorTexture);
                 break;
             case GameOver:
+                DrawText(TextFormat("Player 1 Score : %d",board.player1Score),300,100,16,BLACK);
+                DrawText(TextFormat("Player 2 Score : %d",board.player2Score),300,120,16,BLACK);
+                if(gameStateData.playerWon == 0)
+                    DrawText("You Won!",300,160,16,BLACK);
+                else 
+                    DrawText("You lost!",300,160,16,BLACK);
                 break;
             case MainMenu:
             case PauseMenu:
@@ -158,6 +171,13 @@ int main(void)
     //--------------------------------------------------------------------------------------
 
     return 0;
+}
+
+void InitializeGameStateData(GameStateData* gameStateData)
+{
+    gameStateData->state = PlayerMove;
+    gameStateData->playerTurn = Player1Turn;
+    gameStateData->playerWon = -1;
 }
 
 void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex)

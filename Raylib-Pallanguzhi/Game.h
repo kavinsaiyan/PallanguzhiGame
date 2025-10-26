@@ -16,6 +16,14 @@ typedef enum
     Player2Turn = 1,
 } PlayerTurn;
 
+typedef struct
+{
+    GameState state;
+    PlayerTurn playerTurn;
+    int playerWon; 
+} GameStateData;
+
+void InitializeGameStateData(GameStateData* gameStateData);
 void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex);
 void DrawBoardGame(Board* board,SlotSelector* slotSelector, Texture2D* boardTexture, Texture2D* ballTexture, Texture2D* slotSelectorTexture);
 #endif
