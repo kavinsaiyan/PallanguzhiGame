@@ -18,3 +18,7 @@ bool IsExitButtonClicked(MainMenu* mainMenu)
 {
     return false;
 }
+
+void DeInitializeMainMenu(MainMenu* mainMenu)
+{
+}

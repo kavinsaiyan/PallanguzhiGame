@@ -22,4 +22,6 @@ void DrawMainMenu(MainMenu* mainMenu);
 bool IsPlayButtonClicked(MainMenu* mainMenu);
 
 bool IsExitButtonClicked(MainMenu* mainMenu);
+
+void DeInitializeMainMenu(MainMenu* mainMenu);
 #endif
