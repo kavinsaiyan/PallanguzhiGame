@@ -5,6 +5,7 @@
 #include "SlotSelector.h"
 #include "Queue.h"
 #include "Game.h"
+#include "MainMenu.h"
 
 int main(void)
 {
@@ -13,7 +14,10 @@ int main(void)
     const int screenWidth = 800;
     const int screenHeight = 680;
 
+    //Window related functions
     InitWindow(screenWidth, screenHeight, "Pallanguzhi");
+    SetExitKey(0);
+    bool exitWindow = false;
     
     Texture2D ballTexture = LoadTexture("Resources/Sample Bead.png");
     Texture2D boardTexture = LoadTexture("Resources/Board.png");
@@ -23,6 +27,11 @@ int main(void)
     GameStateData gameStateData;
     InitializeGameStateData(&gameStateData);
     Queue* animQ = CreateQueue();
+    MainMenuData mainMenu;
+    InitializeMainMenu(&mainMenu);
+
+    //Test Main menu
+    gameStateData.state = MainMenu;
 
     //Initialize the board
     Board board;
@@ -41,10 +50,13 @@ int main(void)
     //--------------------------------------------------------------------------------------
 
     // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
+    while (!exitWindow)    // Detect window close button or ESC key
     {
         // Update
         float dt = GetFrameTime();
+
+        // Check for window close
+        if(IsKeyPressed(KEY_ESCAPE) || WindowShouldClose()) exitWindow = true;
 
         // Get user input from keys for moving slotSelector
         if(IsKeyPressed(KEY_RIGHT)) slotSelector.currentIndex -= 1;
@@ -61,7 +73,6 @@ int main(void)
         switch(gameStateData.state)
         {
             case PlayerMove: 
-                
                 gameStateData.playerWon = HasAnyPlayerWon(&board);
                 if(gameStateData.playerWon != -1)
                 {
@@ -129,7 +140,12 @@ int main(void)
                 }
                 break;
             case GameOver: break;
-            case MainMenu: break;
+            case MainMenu:
+                 if(IsPlayButtonClicked(&mainMenu))
+                    gameStateData.state = PlayerMove;
+                 if(IsExitButtonClicked(&mainMenu))
+                    exitWindow = true;
+                 break;
             case PauseMenu: break;
         }
 
@@ -137,7 +153,6 @@ int main(void)
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-        ClearBackground(RAYWHITE);
         switch(gameStateData.state)
         {
             case Animating:
@@ -153,6 +168,8 @@ int main(void)
                     DrawText("You lost!",300,160,16,BLACK);
                 break;
             case MainMenu:
+                DrawMainMenu(&mainMenu);
+                break;
             case PauseMenu:
                 break;
         }
@@ -193,6 +210,7 @@ void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex
 
 void DrawBoardGame(Board* board,SlotSelector* slotSelector, Texture2D* boardTexture, Texture2D* ballTexture, Texture2D* slotSelectorTexture)
 {
+    ClearBackground(RAYWHITE);
     DrawBoard(board, boardTexture, ballTexture);
     DrawSlotSelector(slotSelector, slotSelectorTexture, board->slots[slotSelector->currentIndex].position);
     DrawText(TextFormat("Player 1 Score : %d",board->player1Score),0,100,16,BLACK);

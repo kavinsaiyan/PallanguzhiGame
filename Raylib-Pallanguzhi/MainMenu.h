@@ -6,8 +6,10 @@
 typedef struct
 {
     Rectangle playButton;
+    Color playButtonColor;
     Rectangle exitButton;
-} MainMenu;
+    Color exitButtonColor;
+} MainMenuData;
 
 //need to draw BG first
 //need to draw two buttons, play and exit
@@ -15,13 +17,13 @@ typedef struct
 
 //what do we need, the Textures for the BG and the buttons
 //coordinates for where to draw the buttons
-void InitializeMainMenu(MainMenu* mainMenu);
+void InitializeMainMenu(MainMenuData* mainMenu);
 
-void DrawMainMenu(MainMenu* mainMenu);
+void DrawMainMenu(MainMenuData* mainMenu);
 
-bool IsPlayButtonClicked(MainMenu* mainMenu);
+bool IsPlayButtonClicked(MainMenuData* mainMenu);
 
-bool IsExitButtonClicked(MainMenu* mainMenu);
+bool IsExitButtonClicked(MainMenuData* mainMenu);
 
-void DeInitializeMainMenu(MainMenu* mainMenu);
+void DeInitializeMainMenu(MainMenuData* mainMenu);
 #endif
