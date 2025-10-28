@@ -1,5 +1,4 @@
 - Add BG for home Menu
 - Pause Menu
-- Get Touch input for the beads (Mouse click)
 - Add audio for click and distribution of beads, add BG music 
 - Build for android
