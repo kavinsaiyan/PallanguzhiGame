@@ -6,6 +6,7 @@
 #include "Queue.h"
 #include "Game.h"
 #include "MainMenu.h"
+#include "EndScreen.h"
 
 int main(void)
 {
@@ -27,11 +28,12 @@ int main(void)
     GameStateData gameStateData;
     InitializeGameStateData(&gameStateData);
     Queue* animQ = CreateQueue();
+
+    //Initialize Menus
     MainMenuData mainMenu;
     InitializeMainMenu(&mainMenu);
-
-    //Test Main menu
-    gameStateData.state = MainMenu;
+    EndScreen endScreen;
+    InitializeEndScreen(&endScreen);
 
     //Initialize the board
     Board board;
@@ -139,13 +141,21 @@ int main(void)
                     }
                 }
                 break;
-            case GameOver: break;
-            case MainMenu:
-                 if(IsPlayButtonClicked(&mainMenu))
+            case GameOver: 
+                if(IsRetryButtonClicked(&endScreen))
+                {
                     gameStateData.state = PlayerMove;
-                 if(IsExitButtonClicked(&mainMenu))
+                    gameStateData.playerTurn = Player1Turn;
+                    slotSelector.currentIndex = (int)(TOTAL_SLOTS * 0.75f);
+                    slotSelector.renderState = Render;
+                }
+                break;
+            case MainMenu:
+                if(IsPlayButtonClicked(&mainMenu))
+                    gameStateData.state = PlayerMove;
+                if(IsExitButtonClicked(&mainMenu))
                     exitWindow = true;
-                 break;
+                break;
             case PauseMenu: break;
         }
 
@@ -160,12 +170,7 @@ int main(void)
                 DrawBoardGame(&board,&slotSelector,&boardTexture,&ballTexture,&slotSelectorTexture);
                 break;
             case GameOver:
-                DrawText(TextFormat("Player 1 Score : %d",board.player1Score),300,100,16,BLACK);
-                DrawText(TextFormat("Player 2 Score : %d",board.player2Score),300,120,16,BLACK);
-                if(gameStateData.playerWon == 0)
-                    DrawText("You Won!",300,160,16,BLACK);
-                else 
-                    DrawText("You lost!",300,160,16,BLACK);
+                DrawEndScreen(&endScreen,board.player1Score,board.player2Score,gameStateData.playerWon);
                 break;
             case MainMenu:
                 DrawMainMenu(&mainMenu);
@@ -195,6 +200,9 @@ void InitializeGameStateData(GameStateData* gameStateData)
     gameStateData->state = PlayerMove;
     gameStateData->playerTurn = Player1Turn;
     gameStateData->playerWon = -1;
+
+    //Set Main menu
+    gameStateData->state = MainMenu;
 }
 
 void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex)
