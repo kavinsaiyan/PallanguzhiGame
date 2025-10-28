@@ -24,10 +24,10 @@ void DrawEndScreen(EndScreen* endScreen, int player1Score, int player2Score, int
     DrawText("Retry",endScreen->retryButton.x+16,endScreen->retryButton.y+10,32,BLACK);
 }
 
-bool IsRetryButtonClicked(EndScreen* endScreen)
+bool IsRetryButtonClicked(EndScreen* endScreen, Vector2 mousePosition)
 {
     endScreen->retryButtonColor = LIGHTGRAY;
-    if(CheckCollisionPointRec(GetMousePosition(), endScreen->retryButton))
+    if(CheckCollisionPointRec(mousePosition, endScreen->retryButton))
     {
         endScreen->retryButtonColor = GRAY;
         if(IsMouseButtonPressed(0))

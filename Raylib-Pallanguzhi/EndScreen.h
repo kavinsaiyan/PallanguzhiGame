@@ -13,5 +13,5 @@ void InitializeEndScreen(EndScreen* endScreen);
 
 void DrawEndScreen(EndScreen* endScreen, int player1Score, int player2Score, int playerWon);
 
-bool IsRetryButtonClicked(EndScreen* endScreen);
+bool IsRetryButtonClicked(EndScreen* endScreen, Vector2 mousePosition);
 #endif

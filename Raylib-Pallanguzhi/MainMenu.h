@@ -21,9 +21,9 @@ void InitializeMainMenu(MainMenuData* mainMenu);
 
 void DrawMainMenu(MainMenuData* mainMenu);
 
-bool IsPlayButtonClicked(MainMenuData* mainMenu);
+bool IsPlayButtonClicked(MainMenuData* mainMenu,Vector2 mousePosition);
 
-bool IsExitButtonClicked(MainMenuData* mainMenu);
+bool IsExitButtonClicked(MainMenuData* mainMenu,Vector2 mousePosition);
 
 void DeInitializeMainMenu(MainMenuData* mainMenu);
 #endif

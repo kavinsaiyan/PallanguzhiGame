@@ -56,6 +56,7 @@ int main(void)
     {
         // Update
         float dt = GetFrameTime();
+        Vector2 mousePosition = GetMousePosition();
 
         // Check for window close
         if(IsKeyPressed(KEY_ESCAPE) || WindowShouldClose()) exitWindow = true;
@@ -63,10 +64,14 @@ int main(void)
         // Get user input from keys for moving slotSelector
         if(IsKeyPressed(KEY_RIGHT)) slotSelector.currentIndex -= 1;
         if(IsKeyPressed(KEY_LEFT)) slotSelector.currentIndex += 1;
+        int mousePosOnSlot = CheckMouseHoverOnSlot(&board,mousePosition);
+        if(mousePosOnSlot != -1 && mousePosOnSlot >= TOTAL_SLOTS/2 && mousePosOnSlot < TOTAL_SLOTS)
+            slotSelector.currentIndex = mousePosOnSlot;
         slotSelector.currentIndex = (int)Wrap(slotSelector.currentIndex,TOTAL_SLOTS/2,TOTAL_SLOTS);
-        
+  
         // Get user input for actually selecting that slot
-        if(IsKeyPressed(KEY_ENTER) && gameStateData.state == PlayerMove && gameStateData.playerTurn == Player1Turn) 
+        if((IsKeyPressed(KEY_ENTER) || (mousePosOnSlot!=-1 && IsMouseButtonPressed(0)))
+                && gameStateData.state == PlayerMove && gameStateData.playerTurn == Player1Turn) 
         {
             slotSelector.renderState = DontRender;
             StartMove(&gameStateData.state,&board,animQ,slotSelector.currentIndex);
@@ -142,18 +147,19 @@ int main(void)
                 }
                 break;
             case GameOver: 
-                if(IsRetryButtonClicked(&endScreen))
+                if(IsRetryButtonClicked(&endScreen,mousePosition))
                 {
                     gameStateData.state = PlayerMove;
                     gameStateData.playerTurn = Player1Turn;
                     slotSelector.currentIndex = (int)(TOTAL_SLOTS * 0.75f);
                     slotSelector.renderState = Render;
+                    InitializeBoard(&board);
                 }
                 break;
             case MainMenu:
-                if(IsPlayButtonClicked(&mainMenu))
+                if(IsPlayButtonClicked(&mainMenu,mousePosition))
                     gameStateData.state = PlayerMove;
-                if(IsExitButtonClicked(&mainMenu))
+                if(IsExitButtonClicked(&mainMenu,mousePosition))
                     exitWindow = true;
                 break;
             case PauseMenu: break;

@@ -11,6 +11,7 @@
 // last slot center is 70, 80 - index 13
 const int SLOT_X_OFFSET = 110;
 const int BORAD_Y_OFFSET = 200/2;
+const int SLOT_RADIUS = 44;
 
 const int TOTAL_SLOTS = 14;
 const int TOTAL_BEADS = 5 * 7 * 2;
@@ -228,7 +229,6 @@ Array* GetSlotsThatHaveBeads(Board* board, int startSlot, int endSlot)
     return arr;
 }
 
-
 int HasAnyPlayerWon(Board* board)
 {
     int res = -1;
@@ -250,4 +250,17 @@ int HasAnyPlayerWon(Board* board)
     }
 
     return res;
+}
+
+int CheckMouseHoverOnSlot(Board* board, Vector2 mousePosition)
+{
+    for(int i = 0; i < TOTAL_SLOTS; i++)
+    {
+        if(CheckCollisionPointCircle(mousePosition, board->slots[i].position,SLOT_RADIUS))
+        {
+            return i;
+        }
+    }
+
+    return -1;
 }

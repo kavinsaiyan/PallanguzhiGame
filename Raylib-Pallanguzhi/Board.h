@@ -11,6 +11,8 @@ extern const int SLOT_X_OFFSET;
 extern const int TOTAL_SLOTS;
 extern const int TOTAL_BEADS;
 
+extern const int SLOT_RADIUS;
+
 typedef enum
 {
     InsideBoard,
@@ -60,4 +62,6 @@ void AddBeadsToPlayer(Board* board,int playerIndex, int slotIndex);
 Array* GetSlotsThatHaveBeads(Board* board, int startSlot, int endSlot);
 
 int HasAnyPlayerWon(Board* board);
+
+int CheckMouseHoverOnSlot(Board* board, Vector2 mousePosition);
 #endif

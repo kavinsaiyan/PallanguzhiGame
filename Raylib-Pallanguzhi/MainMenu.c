@@ -26,10 +26,10 @@ void DrawMainMenu(MainMenuData* mainMenu)
     DrawText("Exit",mainMenu->exitButton.x+16,mainMenu->exitButton.y+10,32,BLACK);
 }
 
-bool IsPlayButtonClicked(MainMenuData* mainMenu)
+bool IsPlayButtonClicked(MainMenuData* mainMenu,Vector2 mousePosition)
 {
     mainMenu->playButtonColor = LIGHTGRAY;
-    if(CheckCollisionPointRec(GetMousePosition(), mainMenu->playButton))
+    if(CheckCollisionPointRec(mousePosition, mainMenu->playButton))
     {
         mainMenu->playButtonColor = GRAY;
         if(IsMouseButtonPressed(0))
@@ -38,10 +38,10 @@ bool IsPlayButtonClicked(MainMenuData* mainMenu)
     return false;
 }
 
-bool IsExitButtonClicked(MainMenuData* mainMenu)
+bool IsExitButtonClicked(MainMenuData* mainMenu,Vector2 mousePosition)
 {
     mainMenu->exitButtonColor = LIGHTGRAY;
-    if(CheckCollisionPointRec(GetMousePosition(), mainMenu->exitButton))
+    if(CheckCollisionPointRec(mousePosition, mainMenu->exitButton))
     {
         mainMenu->exitButtonColor = GRAY;
         if(IsMouseButtonPressed(0))
