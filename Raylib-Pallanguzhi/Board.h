@@ -13,6 +13,8 @@ extern const int TOTAL_BEADS;
 
 extern const int SLOT_RADIUS;
 
+extern const int INITIAL_BEADS_PER_SLOT;
+
 typedef enum
 {
     InsideBoard,
@@ -32,6 +34,8 @@ typedef struct
 typedef struct
 {
     Vector2 position;
+    Vector2 beadCountTextPosition;
+    int beadCount;
 } Slot;
 
 typedef struct

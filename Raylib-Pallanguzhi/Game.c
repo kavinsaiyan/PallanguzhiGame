@@ -71,7 +71,8 @@ int main(void)
   
         // Get user input for actually selecting that slot
         if((IsKeyPressed(KEY_ENTER) || (mousePosOnSlot!=-1 && IsMouseButtonPressed(0)))
-                && gameStateData.state == PlayerMove && gameStateData.playerTurn == Player1Turn) 
+                && gameStateData.state == PlayerMove && gameStateData.playerTurn == Player1Turn
+                && GetBeadCountInSlot(&board,slotSelector.currentIndex) > 0) 
         {
             slotSelector.renderState = DontRender;
             StartMove(&gameStateData.state,&board,animQ,slotSelector.currentIndex);

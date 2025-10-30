@@ -11,10 +11,13 @@
 // last slot center is 70, 80 - index 13
 const int SLOT_X_OFFSET = 110;
 const int BORAD_Y_OFFSET = 200/2;
-const int SLOT_RADIUS = 44;
 
 const int TOTAL_SLOTS = 14;
 const int TOTAL_BEADS = 5 * 7 * 2;
+
+const int SLOT_RADIUS = 44;
+
+const int INITIAL_BEADS_PER_SLOT = 5;
 
 void InitializeBoard(Board *board)
 {
@@ -25,18 +28,24 @@ void InitializeBoard(Board *board)
     {
         board->slots[i].position.x = 70 + i * SLOT_X_OFFSET;
         board->slots[i].position.y = 176 + BORAD_Y_OFFSET;
+        board->slots[i].beadCount = INITIAL_BEADS_PER_SLOT;
+        board->slots[i].beadCountTextPosition.x = board->slots[i].position.x;
+        board->slots[i].beadCountTextPosition.y = board->slots[i].position.y - 84;
     }
 
     for(int i=TOTAL_SLOTS; i >= 7; i--)
     {
         board->slots[i].position.x = 70 + (13 - i) * SLOT_X_OFFSET;
         board->slots[i].position.y = 282 + BORAD_Y_OFFSET;
+        board->slots[i].beadCount = INITIAL_BEADS_PER_SLOT;
+        board->slots[i].beadCountTextPosition.x = board->slots[i].position.x;
+        board->slots[i].beadCountTextPosition.y = board->slots[i].position.y + 70;
     }
 
     //Initalize the bead positions
     for(int i=0; i < TOTAL_SLOTS; i++)
     {
-        for(int j=i*5; j < i*5+5 && j < TOTAL_BEADS;j++)
+        for(int j=i* INITIAL_BEADS_PER_SLOT; j < i * INITIAL_BEADS_PER_SLOT + INITIAL_BEADS_PER_SLOT && j < TOTAL_BEADS;j++)
         {
            board->beads[j].slotIndex = i;
            board->beads[j].renderState = Render;
@@ -70,15 +79,27 @@ void MoveBeadTo(Board* board, int beadIndex)
         return;
     }
 
+    // reduce count in previous slot
+    if(board->beads[beadIndex].slotIndex < 0 || board->beads[beadIndex].slotIndex >= TOTAL_SLOTS)
+    {
+        TraceLog(LOG_ERROR, "[Board.c/MoveBeadTo]: current slot Index is not in range : %d",board->beads[beadIndex].slotIndex);
+        return;
+    }
+    else
+        board->slots[board->beads[beadIndex].slotIndex].beadCount--;
+
     board->beads[beadIndex].slotIndex = slotIndex;
     board->beads[beadIndex].position.x = board->slots[slotIndex].position.x + GetRandomValue(-20,20);
     board->beads[beadIndex].position.y = board->slots[slotIndex].position.y + GetRandomValue(-20,20);
 
-    //move the current Move Index to next one
+    // Move the current Move Index to next one
     board->currentMoveIndex = (int)Wrap(board->currentMoveIndex - 1,0,TOTAL_SLOTS);
 
-    //Set Render state to render
+    // Set Render state to render
     board->beads[beadIndex].renderState = Render;
+
+    // Add count in next slot
+    board->slots[slotIndex].beadCount++;
 }
 
 void AddBeadsToPlayer(Board* board,int playerIndex, int slotIndex)
@@ -91,6 +112,7 @@ void AddBeadsToPlayer(Board* board,int playerIndex, int slotIndex)
             count++;
             board->beads[i].state = (playerIndex == 0) ? CollectedByPlayer1 : CollectedByPlayer2;
             board->beads[i].renderState = DontRender;
+            board->slots[slotIndex].beadCount--;
         }
     }
     TraceLog(LOG_INFO,"beads added are %d",count);
@@ -120,6 +142,10 @@ void DrawBoard(Board* board, Texture2D* boardTexture, Texture2D* ballTexture)
         {
             DrawTexture(*ballTexture, board->beads[i].position.x - 16,board->beads[i].position.y - 16, WHITE);
         }
+    }
+    for(int i=0; i < TOTAL_SLOTS; i++)
+    {
+        DrawText(TextFormat("%d",board->slots[i].beadCount),board->slots[i].beadCountTextPosition.x,board->slots[i].beadCountTextPosition.y,16,BLACK);
     }
 }
 
