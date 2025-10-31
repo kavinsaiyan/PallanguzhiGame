@@ -23,6 +23,7 @@ int main(void)
     Texture2D ballTexture = LoadTexture("Resources/Sample Bead.png");
     Texture2D boardTexture = LoadTexture("Resources/Board.png");
     Texture2D slotSelectorTexture = LoadTexture(SELECTOR_TEXTURE_PATH);
+    Texture2D mainMenuBGTexture = LoadTexture("Resources/HomeBG.png");
 
     //Initialize Game State
     GameStateData gameStateData;
@@ -180,7 +181,7 @@ int main(void)
                 DrawEndScreen(&endScreen,board.player1Score,board.player2Score,gameStateData.playerWon);
                 break;
             case MainMenu:
-                DrawMainMenu(&mainMenu);
+                DrawMainMenu(&mainMenu,&mainMenuBGTexture);
                 break;
             case PauseMenu:
                 break;
@@ -196,6 +197,7 @@ int main(void)
     UnloadTexture(ballTexture);
     UnloadTexture(boardTexture);
     UnloadTexture(slotSelectorTexture);
+    UnloadTexture(mainMenuBGTexture);
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 

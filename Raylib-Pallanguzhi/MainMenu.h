@@ -19,7 +19,7 @@ typedef struct
 //coordinates for where to draw the buttons
 void InitializeMainMenu(MainMenuData* mainMenu);
 
-void DrawMainMenu(MainMenuData* mainMenu);
+void DrawMainMenu(MainMenuData* mainMenu, Texture2D* bgTexture);
 
 bool IsPlayButtonClicked(MainMenuData* mainMenu,Vector2 mousePosition);
 

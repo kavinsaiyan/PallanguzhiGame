@@ -16,9 +16,10 @@ void InitializeMainMenu(MainMenuData* mainMenu)
     mainMenu->exitButtonColor = LIGHTGRAY;
 }
 
-void DrawMainMenu(MainMenuData* mainMenu)
+void DrawMainMenu(MainMenuData* mainMenu, Texture2D* bgTexture)
 {
     ClearBackground(RAYWHITE);
+    DrawTexture(*bgTexture,0,100,WHITE);
     DrawRectangleRec(mainMenu->playButton, mainMenu->playButtonColor);
     DrawText("Play",mainMenu->playButton.x+16,mainMenu->playButton.y+10,32,BLACK);
 
