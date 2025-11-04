@@ -20,10 +20,15 @@ int main(void)
     SetExitKey(0);
     bool exitWindow = false;
     
+    //Loading Textures
     Texture2D ballTexture = LoadTexture("Resources/Sample Bead.png");
     Texture2D boardTexture = LoadTexture("Resources/Board.png");
     Texture2D slotSelectorTexture = LoadTexture(SELECTOR_TEXTURE_PATH);
     Texture2D mainMenuBGTexture = LoadTexture("Resources/HomeBG.png");
+    
+    //Audio Init
+    InitAudioDevice();
+    Sound moveSound = LoadSound("Resources/move.wav");
 
     //Initialize Game State
     GameStateData gameStateData;
@@ -104,9 +109,10 @@ int main(void)
                 break;
             case Animating:
                 timer += dt;
-                if(timer > 0.1f)
+                if(timer > 0.4f)
                 {
                     timer = 0;
+                    PlaySound(moveSound);
                     TraceLog(LOG_INFO,"next move index is %d",board.currentMoveIndex);
                     if(animQ->count > 0)
                     {
@@ -193,6 +199,9 @@ int main(void)
     // De-Initialization
     //--------------------------------------------------------------------------------------
     DestroyQueue(animQ);
+    
+    UnloadSound(moveSound);    
+    CloseAudioDevice();
 
     UnloadTexture(ballTexture);
     UnloadTexture(boardTexture);
