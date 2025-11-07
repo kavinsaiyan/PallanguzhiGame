@@ -1,13 +1,14 @@
 #include "raylib.h"
 #include "EndScreen.h"
 
-void InitializeEndScreen(EndScreen* endScreen)
+void InitializeEndScreen(EndScreen* endScreen, Sound* clickSound)
 {
     endScreen->retryButton.x=320;
     endScreen->retryButton.y=300;
     endScreen->retryButton.width = 120;
     endScreen->retryButton.height = 50;
     endScreen->retryButtonColor = LIGHTGRAY;
+    endScreen->clickSound = clickSound;
 }
 
 void DrawEndScreen(EndScreen* endScreen, int player1Score, int player2Score, int playerWon)
@@ -31,7 +32,10 @@ bool IsRetryButtonClicked(EndScreen* endScreen, Vector2 mousePosition)
     {
         endScreen->retryButtonColor = GRAY;
         if(IsMouseButtonPressed(0))
+        {
+            PlaySound(*(endScreen->clickSound));
             return true;
+        }
     }
 
     return false;

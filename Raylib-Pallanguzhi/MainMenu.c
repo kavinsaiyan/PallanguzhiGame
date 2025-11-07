@@ -1,7 +1,7 @@
 #include "MainMenu.h"
 #include "raylib.h"
 
-void InitializeMainMenu(MainMenuData* mainMenu)
+void InitializeMainMenu(MainMenuData* mainMenu, Sound* clickSound)
 {
     mainMenu->playButton.x=340;
     mainMenu->playButton.y=300;
@@ -14,6 +14,8 @@ void InitializeMainMenu(MainMenuData* mainMenu)
     mainMenu->exitButton.width = 100;
     mainMenu->exitButton.height = 50;
     mainMenu->exitButtonColor = LIGHTGRAY;
+
+    mainMenu->clickSound = clickSound;
 }
 
 void DrawMainMenu(MainMenuData* mainMenu, Texture2D* bgTexture)
@@ -34,7 +36,10 @@ bool IsPlayButtonClicked(MainMenuData* mainMenu,Vector2 mousePosition)
     {
         mainMenu->playButtonColor = GRAY;
         if(IsMouseButtonPressed(0))
+        {
+            PlaySound(*(mainMenu->clickSound));
             return true;
+        }
     }
     return false;
 }
@@ -46,7 +51,10 @@ bool IsExitButtonClicked(MainMenuData* mainMenu,Vector2 mousePosition)
     {
         mainMenu->exitButtonColor = GRAY;
         if(IsMouseButtonPressed(0))
+        {
+            PlaySound(*(mainMenu->clickSound));
             return true;
+        }
     }
     return false;
 }

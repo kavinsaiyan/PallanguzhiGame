@@ -7,9 +7,10 @@ typedef struct
 {
     Rectangle retryButton;
     Color retryButtonColor;
+    Sound* clickSound;
 } EndScreen;
 
-void InitializeEndScreen(EndScreen* endScreen);
+void InitializeEndScreen(EndScreen* endScreen,Sound* clickSound);
 
 void DrawEndScreen(EndScreen* endScreen, int player1Score, int player2Score, int playerWon);
 

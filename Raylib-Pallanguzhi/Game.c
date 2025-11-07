@@ -29,6 +29,7 @@ int main(void)
     //Audio Init
     InitAudioDevice();
     Sound moveSound = LoadSound("Resources/move.wav");
+    Sound clickSound = LoadSound("Resources/click.wav");
 
     //Initialize Game State
     GameStateData gameStateData;
@@ -37,9 +38,9 @@ int main(void)
 
     //Initialize Menus
     MainMenuData mainMenu;
-    InitializeMainMenu(&mainMenu);
+    InitializeMainMenu(&mainMenu,&clickSound);
     EndScreen endScreen;
-    InitializeEndScreen(&endScreen);
+    InitializeEndScreen(&endScreen,&clickSound);
 
     //Initialize the board
     Board board;
@@ -201,6 +202,7 @@ int main(void)
     DestroyQueue(animQ);
     
     UnloadSound(moveSound);    
+    UnloadSound(clickSound);    
     CloseAudioDevice();
 
     UnloadTexture(ballTexture);

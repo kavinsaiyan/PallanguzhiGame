@@ -9,6 +9,7 @@ typedef struct
     Color playButtonColor;
     Rectangle exitButton;
     Color exitButtonColor;
+    Sound* clickSound;
 } MainMenuData;
 
 //need to draw BG first
@@ -17,7 +18,7 @@ typedef struct
 
 //what do we need, the Textures for the BG and the buttons
 //coordinates for where to draw the buttons
-void InitializeMainMenu(MainMenuData* mainMenu);
+void InitializeMainMenu(MainMenuData* mainMenu,Sound* clickSound);
 
 void DrawMainMenu(MainMenuData* mainMenu, Texture2D* bgTexture);
 
