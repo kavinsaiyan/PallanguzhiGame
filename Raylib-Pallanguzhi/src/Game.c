@@ -190,7 +190,7 @@ int main(void)
         {
             case Animating:
             case PlayerMove:
-                DrawBoardGame(&board,&slotSelector,&boardTexture,&ballTexture,&slotSelectorTexture);
+                DrawBoardGame(&board,&slotSelector,&boardTexture,&ballTexture,&slotSelectorTexture, gameStateData.playerTurn);
                 break;
             case GameOver:
                 DrawEndScreen(&endScreen,board.player1Score,board.player2Score,gameStateData.playerWon);
@@ -244,11 +244,17 @@ void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex
     DestroyArray(arr);
 }
 
-void DrawBoardGame(Board* board,SlotSelector* slotSelector, Texture2D* boardTexture, Texture2D* ballTexture, Texture2D* slotSelectorTexture)
+void DrawBoardGame(Board* board,SlotSelector* slotSelector, Texture2D* boardTexture, Texture2D* ballTexture, Texture2D* slotSelectorTexture,PlayerTurn playerTurn)
 {
     ClearBackground(RAYWHITE);
     DrawBoard(board, boardTexture, ballTexture);
     DrawSlotSelector(slotSelector, slotSelectorTexture, board->slots[slotSelector->currentIndex].position);
-    DrawText(TextFormat("Player 1 Score : %d",board->player1Score),0,100,16,BLACK);
-    DrawText(TextFormat("Player 2 Score : %d",board->player2Score),0,120,16,BLACK);
+
+    if(playerTurn == Player1Turn)    
+        DrawText("Your Turn",300,600,26,BLACK);
+    else 
+        DrawText("AI Turn",300,100,26,BLACK);
+
+    DrawText(TextFormat("Your Score : %d",board->player1Score),10,100,26,BLACK);
+    DrawText(TextFormat("AI Score : %d",board->player2Score),10,130,26,BLACK);
 }

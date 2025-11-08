@@ -1,3 +1,8 @@
 - Pause Menu (Later)
 - Add BG music 
-- Build for android
+- Language selection screen
+- Add save for highscore and as well as langugage selection
+- Add Tamil font for rendering
+- Multiplayer
+    - Server Code
+    - Multiplayer compatible client code

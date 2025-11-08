@@ -14,8 +14,8 @@ void InitializeEndScreen(EndScreen* endScreen, Sound* clickSound)
 void DrawEndScreen(EndScreen* endScreen, int player1Score, int player2Score, int playerWon)
 {
     ClearBackground(RAYWHITE);
-    DrawText(TextFormat("Player 1 Score : %d",player1Score),300,100,16,BLACK);
-    DrawText(TextFormat("Player 2 Score : %d",player2Score),300,120,16,BLACK);
+    DrawText(TextFormat("Your Score : %d",player1Score),300,100,16,BLACK);
+    DrawText(TextFormat("AI Score : %d",player2Score),300,120,16,BLACK);
     if(playerWon == 0)
         DrawText("You Won!",300,160,16,BLACK);
     else 

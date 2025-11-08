@@ -30,7 +30,7 @@ void InitializeBoard(Board *board)
         board->slots[i].position.y = 176 + BORAD_Y_OFFSET;
         board->slots[i].beadCount = INITIAL_BEADS_PER_SLOT;
         board->slots[i].beadCountTextPosition.x = board->slots[i].position.x;
-        board->slots[i].beadCountTextPosition.y = board->slots[i].position.y - 84;
+        board->slots[i].beadCountTextPosition.y = board->slots[i].position.y - 94;
     }
 
     for(int i=TOTAL_SLOTS; i >= 7; i--)
@@ -39,7 +39,7 @@ void InitializeBoard(Board *board)
         board->slots[i].position.y = 282 + BORAD_Y_OFFSET;
         board->slots[i].beadCount = INITIAL_BEADS_PER_SLOT;
         board->slots[i].beadCountTextPosition.x = board->slots[i].position.x;
-        board->slots[i].beadCountTextPosition.y = board->slots[i].position.y + 70;
+        board->slots[i].beadCountTextPosition.y = board->slots[i].position.y + 80;
     }
 
     //Initalize the bead positions
@@ -145,7 +145,7 @@ void DrawBoard(Board* board, Texture2D* boardTexture, Texture2D* ballTexture)
     }
     for(int i=0; i < TOTAL_SLOTS; i++)
     {
-        DrawText(TextFormat("%d",board->slots[i].beadCount),board->slots[i].beadCountTextPosition.x,board->slots[i].beadCountTextPosition.y,16,BLACK);
+        DrawText(TextFormat("%d",board->slots[i].beadCount),board->slots[i].beadCountTextPosition.x,board->slots[i].beadCountTextPosition.y,26,BLACK);
     }
 }
 
