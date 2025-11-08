@@ -44,7 +44,7 @@ void EnqueueArray(Queue* q, int* arr, int len)
 
 int Dequeue(Queue* q)
 {
-    int res;
+    int res = 0;
     if(q->count < q->size && q->count > 0)
     {
         res = q->arr[0];

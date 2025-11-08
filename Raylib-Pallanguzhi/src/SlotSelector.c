@@ -2,7 +2,7 @@
 #include "SlotSelector.h"
 #include "Board.h"
 
-const char* SELECTOR_TEXTURE_PATH = "Resources/SlotSelector.png";
+const char* SELECTOR_TEXTURE_PATH = "SlotSelector.png";
 
 void DrawSlotSelector(SlotSelector* slotSelector, Texture2D* slotSelectorTexture, Vector2 position)
 {

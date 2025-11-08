@@ -20,16 +20,24 @@ int main(void)
     SetExitKey(0);
     bool exitWindow = false;
     
+#ifndef PLATFORM_ANDROID
+	ChangeDirectory("assets");
+#endif
+
     //Loading Textures
-    Texture2D ballTexture = LoadTexture("Resources/Sample Bead.png");
-    Texture2D boardTexture = LoadTexture("Resources/Board.png");
+    Texture2D ballTexture = LoadTexture("Sample Bead.png");
+    Texture2D boardTexture = LoadTexture("Board.png");
     Texture2D slotSelectorTexture = LoadTexture(SELECTOR_TEXTURE_PATH);
-    Texture2D mainMenuBGTexture = LoadTexture("Resources/HomeBG.png");
+    Texture2D mainMenuBGTexture = LoadTexture("HomeBG.png");
     
     //Audio Init
     InitAudioDevice();
-    Sound moveSound = LoadSound("Resources/move.wav");
-    Sound clickSound = LoadSound("Resources/click.wav");
+    Sound moveSound = LoadSound("move.wav");
+    Sound clickSound = LoadSound("click.wav");
+    
+#ifndef PLATFORM_ANDROID
+	ChangeDirectory("..");
+#endif
 
     //Initialize Game State
     GameStateData gameStateData;
