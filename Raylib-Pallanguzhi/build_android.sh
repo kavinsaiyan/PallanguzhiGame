@@ -88,7 +88,7 @@ for ABI in $ABIS; do
 		-L$TOOLCHAIN/sysroot/usr/lib/$LIBPATH/29 \
 		-L$TOOLCHAIN/lib/clang/17/lib/linux/$ARCH \
 		-L. -Landroid/build/obj -Llib/$ABI \
-		-lraylib -lnative_app_glue -llog -landroid -lEGL -lGLESv2 -lOpenSLES -latomic -lc -lm -ldl
+		-lraylib -lnative_app_glue -llog -landroid -lEGL -lGLESv2 -lOpenSLES -lc -lm -ldl
 done
 
 # ______________________________________________________________________________
