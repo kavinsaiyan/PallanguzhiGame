@@ -7,7 +7,12 @@
     - Server Code
     - Multiplayer compatible client code
 - Game Icon
+- update Readme
 - Follow game theme for art - hand drawn by mouse?
     - Draw the buttons too?
     - make a font that is mouse written
-- change com.raylib.game for android and it's related things
+- build 
+    - windows build
+    - linux build
+    - macOS build
+    - docker and github actions?
