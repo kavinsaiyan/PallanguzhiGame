@@ -1,8 +1,14 @@
 *.o
 *.out
 *.swp
+*.keystore
 Game
 raylib/*
 *.apk*
-android/*
-!android/build/src/com/pallanguzhi/game/NativeLoader.java
+android/ndk/*
+android/sdk/*
+android/build/assets/*
+android/build/dex/*
+android/build/lib/*
+android/build/obj/*
+android/build/res/*
