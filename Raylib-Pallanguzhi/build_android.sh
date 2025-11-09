@@ -104,8 +104,8 @@ $BUILD_TOOLS/aapt package -f -m \
 javac -verbose -source 1.8 -target 1.8 -d android/build/obj \
 	-bootclasspath jre/lib/rt.jar \
 	-classpath android/sdk/platforms/android-29/android.jar:android/build/obj \
-	-sourcepath src android/build/src/com/raylib/game/R.java \
-	android/build/src/com/raylib/game/NativeLoader.java
+	-sourcepath src android/build/src/com/pallanguzhi/game/R.java \
+	android/build/src/com/pallanguzhi/game/NativeLoader.java
 
 $BUILD_TOOLS/dx --verbose --dex --output=android/build/dex/classes.dex android/build/obj
 

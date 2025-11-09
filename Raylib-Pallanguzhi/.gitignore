@@ -5,4 +5,4 @@ Game
 raylib/*
 *.apk*
 android/*
-!android/build/src/*
+!android/build/src/com/pallanguzhi/game/NativeLoader.java
