@@ -7,7 +7,6 @@
     - Server Code
     - Multiplayer compatible client code
 - Game Icon
-- update Readme
 - Follow game theme for art - hand drawn by mouse?
     - Draw the buttons too?
     - make a font that is mouse written
