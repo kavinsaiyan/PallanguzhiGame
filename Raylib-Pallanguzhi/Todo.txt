@@ -1,8 +1,13 @@
 - Pause Menu (Later)
-- Add BG music 
+- Add BG music
 - Language selection screen
 - Add save for highscore and as well as langugage selection
 - Add Tamil font for rendering
 - Multiplayer
     - Server Code
     - Multiplayer compatible client code
+- Game Icon
+- Follow game theme for art - hand drawn by mouse?
+    - Draw the buttons too?
+    - make a font that is mouse written
+- change com.raylib.game for android and it's related things

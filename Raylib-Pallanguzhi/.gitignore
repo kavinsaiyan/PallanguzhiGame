@@ -2,6 +2,7 @@
 *.out
 *.swp
 Game
-android/*
 raylib/*
 *.apk*
+android/*
+!android/build/src/*
