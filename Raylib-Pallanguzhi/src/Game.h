@@ -1,3 +1,7 @@
+#include "Board.h"
+#include "Queue.h"
+#include "SlotSelector.h"
+
 #ifndef GAME_H
 #define GAME_H
 
@@ -22,6 +26,12 @@ typedef struct
     PlayerTurn playerTurn;
     int playerWon; 
 } GameStateData;
+
+typedef enum
+{
+    Tamil,
+    English,
+} Language;
 
 void InitializeGameStateData(GameStateData* gameStateData);
 void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex);

@@ -1,5 +1,6 @@
 - Pause Menu (Later)
 - Add BG music
+    - Involves learning a DAW
 - Language selection screen
 - Add save for highscore and as well as langugage selection
 - Add Tamil font for rendering
@@ -10,6 +11,7 @@
 - Follow game theme for art - hand drawn by mouse?
     - Draw the buttons too?
     - make a font that is mouse written
+    - or learn to properly draw in krita? for digital painting style
 - build 
     - windows build
     - linux build

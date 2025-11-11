@@ -12,3 +12,4 @@ android/build/dex/*
 android/build/lib/*
 android/build/obj/*
 android/build/res/*
+SaveData/*

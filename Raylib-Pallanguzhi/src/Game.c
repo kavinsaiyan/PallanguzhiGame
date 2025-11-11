@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "MainMenu.h"
 #include "EndScreen.h"
+#include "SaveData.h"
 
 int main(void)
 {
@@ -38,6 +39,10 @@ int main(void)
 #ifndef PLATFORM_ANDROID
 	ChangeDirectory("..");
 #endif
+
+    //Save Data
+    SaveData saveData;
+    CheckAndLoadSaveData(&saveData);
 
     //Initialize Game State
     GameStateData gameStateData;
