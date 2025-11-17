@@ -4,6 +4,7 @@
 #include "Render.h"
 #include "SlotSelector.h"
 #include "Queue.h"
+#include "LanguageEnum.h"
 #include "Game.h"
 #include "MainMenu.h"
 #include "EndScreen.h"

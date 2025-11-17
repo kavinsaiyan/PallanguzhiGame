@@ -27,12 +27,6 @@ typedef struct
     int playerWon; 
 } GameStateData;
 
-typedef enum
-{
-    Tamil,
-    English,
-} Language;
-
 void InitializeGameStateData(GameStateData* gameStateData);
 void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex);
 void DrawBoardGame(Board* board,SlotSelector* slotSelector, Texture2D* boardTexture, Texture2D* ballTexture, Texture2D* slotSelectorTexture, PlayerTurn playerTurn);

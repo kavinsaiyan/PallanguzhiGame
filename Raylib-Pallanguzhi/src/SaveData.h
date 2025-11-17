@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "LanguageEnum.h"
 
 #ifndef SAVEDATA_H
 #define SAVEDATA_H
