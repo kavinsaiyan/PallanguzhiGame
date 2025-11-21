@@ -4,11 +4,12 @@
 #include "Render.h"
 #include "SlotSelector.h"
 #include "Queue.h"
-#include "LanguageEnum.h"
+#include "LanguageSelection.h"
 #include "Game.h"
 #include "MainMenu.h"
 #include "EndScreen.h"
 #include "SaveData.h"
+#include <stdlib.h>
 
 int main(void)
 {
@@ -36,6 +37,9 @@ int main(void)
     InitAudioDevice();
     Sound moveSound = LoadSound("move.wav");
     Sound clickSound = LoadSound("click.wav");
+
+    //Load Font
+    Font tamilFont = LoadFontEx("Kavivanar-Regular.ttf",15,NULL,0);
     
 #ifndef PLATFORM_ANDROID
 	ChangeDirectory("..");
@@ -196,6 +200,7 @@ int main(void)
         {
             case Animating:
             case PlayerMove:
+                DrawTextEx(tamilFont,"வணக்கம் உலகம்",(Vector2){100,100},15,4,BLACK);
                 DrawBoardGame(&board,&slotSelector,&boardTexture,&ballTexture,&slotSelectorTexture, gameStateData.playerTurn);
                 break;
             case GameOver:
@@ -215,6 +220,7 @@ int main(void)
     //--------------------------------------------------------------------------------------
     DestroyQueue(animQ);
     
+    UnloadFont(tamilFont);
     UnloadSound(moveSound);    
     UnloadSound(clickSound);    
     CloseAudioDevice();

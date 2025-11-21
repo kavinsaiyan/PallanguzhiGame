@@ -2,8 +2,9 @@
 #include "LanguageEnum.h"
 #include <stdlib.h>
 
-Language currentLanguage = English;
-Font* currentFont = NULL;
+// File scope variables
+static Language currentLanguage = English;
+static Font* currentFont = NULL;
 
 void SetLanguage(Language language, Font* font)
 {
@@ -18,4 +19,9 @@ Language GetLanguage()
 Font* GetFont()
 {
     return currentFont;
+}
+
+void SetFont(Font* font)
+{
+	currentFont = font;
 }

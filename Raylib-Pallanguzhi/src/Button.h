@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include "Translation.h"
-#include "LanguageEnum.h"
+#include "LanguageSelection.h"
 
 #ifndef BUTTON_H
 #define BUTTON_H
@@ -13,7 +13,7 @@ typedef struct
     TextID textID;
 } Button;
 
-void DrawButton(Button* button);
+void DrawButton(Button* button, bool drawButtonText);
 
 bool IsButtonClicked(Button* button, Vector2 mousePosition);
 #endif
