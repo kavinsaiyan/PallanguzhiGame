@@ -5,6 +5,7 @@ const char* GetText(TextID text)
 {
     switch(GetLanguage())
     {
+        case DefaultLanguage:
         case English:
             switch(text)
             {

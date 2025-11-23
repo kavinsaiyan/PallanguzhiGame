@@ -6,9 +6,9 @@
 const int TAMIL_CHARS_COUNT = 128; // Range 0x0B80 to 0x0BFF
 
 static Language currentLanguage = English;
-static Font loadedFontTamil;
-static Font loadedFontEnglish;
-static Font loadedFont;
+static Font englishFont;
+static Font tamilFont;
+static Font selectedFont;
 
 static Button tamilButton;
 static Button englishButton;
@@ -19,35 +19,45 @@ void SetLanguageAndLoadedFont(Language language)
     switch(language)
     {
         case Tamil:
-            loadedFont = loadedFontTamil;
+            selectedFont = tamilFont;
             break;
         case DefaultLanguage:
         case English:
-            loadedFont = loadedFontEnglish;
+            selectedFont = englishFont;
             break;
     }
 }
 
-void Initialize(Language language, Sound clickSound)
+void InitializeLanguageSelection(Language language, Sound* clickSound)
 {
     //Load tamil font
     int tamil_chars[TAMIL_CHARS_COUNT];
     for (int i = 0; i < TAMIL_CHARS_COUNT; i++)
         tamil_chars[i] = 0x0B80 + i;
-    loadedFontTamil = (LoadFontEx("Kavivanar-Regular.ttf",40,tamil_chars,TAMIL_CHARS_COUNT));
+    tamilFont = (LoadFontEx("Kavivanar-Regular.ttf",40,tamil_chars,TAMIL_CHARS_COUNT));
 
     //Load English font
-    loadedFontEnglish = (LoadFontEx("TASAExplorer-Regular.ttf",40,NULL,0)); 
+    englishFont = (LoadFontEx("TASAExplorer-Regular.ttf",40,NULL,0)); 
 
     SetLanguageAndLoadedFont(language);
 
-    //tamilButton.pos =  
+    tamilButton.rect.x = 320;
+    tamilButton.rect.y = 280;
+    tamilButton.rect.width = 140;
+    tamilButton.rect.height = 50;
+    tamilButton.color = LIGHTGRAY;
+
+    englishButton.rect.x = 320;
+    englishButton.rect.y = 360;
+    englishButton.rect.width = 140;
+    englishButton.rect.height = 50;
+    englishButton.color = LIGHTGRAY;
 }
 
-void DeInitialize()
+void DeInitializeLanguageSelection()
 {
-    UnloadFont(loadedFontEnglish);
-    UnloadFont(loadedFontTamil);
+    UnloadFont(englishFont);
+    UnloadFont(tamilFont);
 }
 
 
@@ -58,17 +68,22 @@ Language GetLanguage()
 
 Font* GetFont()
 {
-    return &loadedFont;
+    return &selectedFont;
 }
 
 
 //screen related 
 void DrawLanguageSelection()
 {
+    ClearBackground(RAYWHITE);
+
+    DrawTextEx(englishFont,"Select Language", (Vector2) { 220, 200 }, 50, 4 , BLACK);
     //draw the buttons here
     bool drawButtonText = false;
     DrawButton(&tamilButton, drawButtonText);
+    DrawTextEx(tamilFont, "தமிழ்", (Vector2){tamilButton.rect.x + 26, tamilButton.rect.y}, 40, 4, BLACK);
     DrawButton(&englishButton, drawButtonText);
+    DrawTextEx(englishFont, "English", (Vector2){englishButton.rect.x + 6, englishButton.rect.y}, 40, 4, BLACK);
 }
 
 Language UpdateLanguageSelection(Vector2 mousePosition)
@@ -78,5 +93,7 @@ Language UpdateLanguageSelection(Vector2 mousePosition)
         language = Tamil;
     if(IsButtonClicked(&englishButton ,mousePosition))
         language = English; 
+    if(language != DefaultLanguage)
+        SetLanguageAndLoadedFont(language);
     return language;
 }

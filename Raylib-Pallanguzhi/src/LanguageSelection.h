@@ -16,9 +16,9 @@ Language GetLanguage();
 
 Font* GetFont();
 
-void Initialize(Language language, Sound clickSound);
+void InitializeLanguageSelection(Language language, Sound* clickSound);
 
-void DeInitialize();
+void DeInitializeLanguageSelection();
 
 void DrawLanguageSelection();
 

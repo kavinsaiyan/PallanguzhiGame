@@ -1,6 +1,7 @@
 #include "Board.h"
 #include "Queue.h"
 #include "SlotSelector.h"
+#include "SaveData.h"
 
 #ifndef GAME_H
 #define GAME_H
@@ -11,7 +12,7 @@ typedef enum
     Animating,
     GameOver,
     MainMenu,
-    PauseMenu
+    LanguageSelection
 } GameState;
 
 typedef enum 
@@ -27,7 +28,7 @@ typedef struct
     int playerWon; 
 } GameStateData;
 
-void InitializeGameStateData(GameStateData* gameStateData);
+void InitializeGameStateData(GameStateData* gameStateData, SaveData* saveData);
 void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex);
 void DrawBoardGame(Board* board,SlotSelector* slotSelector, Texture2D* boardTexture, Texture2D* ballTexture, Texture2D* slotSelectorTexture, PlayerTurn playerTurn);
 #endif

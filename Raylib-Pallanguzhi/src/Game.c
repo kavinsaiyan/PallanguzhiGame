@@ -22,7 +22,11 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "Pallanguzhi");
     SetExitKey(0);
     bool exitWindow = false;
-    
+ 
+    //Save Data
+    SaveData saveData;
+    CheckAndLoadSaveData(&saveData);
+   
 #ifndef PLATFORM_ANDROID
 	ChangeDirectory("assets");
 #endif
@@ -38,20 +42,16 @@ int main(void)
     Sound moveSound = LoadSound("move.wav");
     Sound clickSound = LoadSound("click.wav");
 
-    //Load Font
-    Font tamilFont = LoadFontEx("Kavivanar-Regular.ttf",15,NULL,0);
-    
+    //Load Fonts and init language selection
+    InitializeLanguageSelection(saveData.languageSelected,&clickSound);
+
 #ifndef PLATFORM_ANDROID
 	ChangeDirectory("..");
 #endif
 
-    //Save Data
-    SaveData saveData;
-    CheckAndLoadSaveData(&saveData);
-
     //Initialize Game State
     GameStateData gameStateData;
-    InitializeGameStateData(&gameStateData);
+    InitializeGameStateData(&gameStateData,&saveData);
     Queue* animQ = CreateQueue();
 
     //Initialize Menus
@@ -189,7 +189,15 @@ int main(void)
                 if(IsExitButtonClicked(&mainMenu,mousePosition))
                     exitWindow = true;
                 break;
-            case PauseMenu: break;
+            case LanguageSelection:
+                 Language selected = UpdateLanguageSelection(mousePosition);
+                 if(selected != DefaultLanguage)
+                 {
+                    gameStateData.state = MainMenu;
+                    saveData.languageSelected = selected;
+                    WriteSaveData(&saveData);
+                 }
+                 break;
         }
 
         // Draw
@@ -200,7 +208,6 @@ int main(void)
         {
             case Animating:
             case PlayerMove:
-                DrawTextEx(tamilFont,"வணக்கம் உலகம்",(Vector2){100,100},15,4,BLACK);
                 DrawBoardGame(&board,&slotSelector,&boardTexture,&ballTexture,&slotSelectorTexture, gameStateData.playerTurn);
                 break;
             case GameOver:
@@ -209,7 +216,8 @@ int main(void)
             case MainMenu:
                 DrawMainMenu(&mainMenu,&mainMenuBGTexture);
                 break;
-            case PauseMenu:
+            case LanguageSelection:
+                DrawLanguageSelection();
                 break;
         }
         EndDrawing();
@@ -219,8 +227,9 @@ int main(void)
     // De-Initialization
     //--------------------------------------------------------------------------------------
     DestroyQueue(animQ);
-    
-    UnloadFont(tamilFont);
+
+    DeInitializeLanguageSelection();
+
     UnloadSound(moveSound);    
     UnloadSound(clickSound);    
     CloseAudioDevice();
@@ -235,19 +244,21 @@ int main(void)
     return 0;
 }
 
-void InitializeGameStateData(GameStateData* gameStateData)
+void InitializeGameStateData(GameStateData* gameStateData, SaveData* saveData)
 {
     gameStateData->state = PlayerMove;
     gameStateData->playerTurn = Player1Turn;
     gameStateData->playerWon = -1;
 
     //Set Main menu
-    gameStateData->state = MainMenu;
+    if(saveData->languageSelected == DefaultLanguage)
+        gameStateData->state = LanguageSelection;
+    else
+        gameStateData->state = MainMenu;
 }
 
 void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex)
 {
-    //*gameState = PauseMenu;
     *gameState = Animating;
     SetBeadRenderStateInSlot(board,currentIndex,DontRender);
     Array* arr = GetAllBeadsFrom(board,currentIndex);

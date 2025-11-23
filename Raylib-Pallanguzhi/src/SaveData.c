@@ -12,7 +12,7 @@ void CheckAndLoadSaveData(SaveData* saveData)
 
     if(!FileExists(SAVE_FILE_PATH))
     {
-        saveData->languageSelected = English;
+        saveData->languageSelected = DefaultLanguage;
         saveData->playerHiScore = 0;
         WriteSaveData(saveData);
         return;
