@@ -15,6 +15,7 @@ static Button englishButton;
 
 void SetLanguageAndLoadedFont(Language language)
 {
+    TraceLog(LOG_INFO,"language set is %d",language);
     currentLanguage = language;
     switch(language)
     {
@@ -46,12 +47,14 @@ void InitializeLanguageSelection(Language language, Sound* clickSound)
     tamilButton.rect.width = 140;
     tamilButton.rect.height = 50;
     tamilButton.color = LIGHTGRAY;
+    tamilButton.clickSound = clickSound;
 
     englishButton.rect.x = 320;
     englishButton.rect.y = 360;
     englishButton.rect.width = 140;
     englishButton.rect.height = 50;
     englishButton.color = LIGHTGRAY;
+    englishButton.clickSound = clickSound;
 }
 
 void DeInitializeLanguageSelection()
@@ -91,7 +94,7 @@ Language UpdateLanguageSelection(Vector2 mousePosition)
     Language language = DefaultLanguage;
     if(IsButtonClicked(&tamilButton,mousePosition))
         language = Tamil;
-    if(IsButtonClicked(&englishButton ,mousePosition))
+    if(IsButtonClicked(&englishButton,mousePosition))
         language = English; 
     if(language != DefaultLanguage)
         SetLanguageAndLoadedFont(language);

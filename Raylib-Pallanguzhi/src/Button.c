@@ -3,6 +3,17 @@
 #include "LanguageSelection.h"
 #include "Translation.h"
 
+void InitButton(Button* button,float x,float y, float width, float height, TextID textID, Sound* clickSound)
+{
+    button->rect.x = x;
+    button->rect.y = y;
+    button->rect.width = width;
+    button->rect.height = height;
+    button->clickSound = clickSound;
+    button->color = LIGHTGRAY;
+    button->textID = textID;
+}
+
 void DrawButton(Button* button, bool drawButtonText)
 {
     DrawRectangleRec(button->rect, button->color);
@@ -11,8 +22,8 @@ void DrawButton(Button* button, bool drawButtonText)
         return;
 
     Vector2 textPos;
-    textPos.x = button->rect.x+16;
-    textPos.y = button->rect.y+10;
+    textPos.x = button->rect.x+8;
+    textPos.y = button->rect.y+8;
     DrawTextEx(*GetFont(),GetText(button->textID),textPos,32,0,BLACK);
 }
 

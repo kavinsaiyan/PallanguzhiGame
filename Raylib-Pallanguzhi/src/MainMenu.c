@@ -1,19 +1,18 @@
 #include "MainMenu.h"
 #include "raylib.h"
+#include "Button.h"
+#include "Translation.h"
+
+static Button playButton;
+static Button exitButton;
 
 void InitializeMainMenu(MainMenuData* mainMenu, Sound* clickSound)
 {
-    mainMenu->playButton.x=340;
-    mainMenu->playButton.y=300;
-    mainMenu->playButton.width = 100;
-    mainMenu->playButton.height = 50;
-    mainMenu->playButtonColor = LIGHTGRAY;
+    TextID play = Play;
+    InitButton(&playButton,340,300,140,50,play,clickSound);
 
-    mainMenu->exitButton.x=340;
-    mainMenu->exitButton.y=380;
-    mainMenu->exitButton.width = 100;
-    mainMenu->exitButton.height = 50;
-    mainMenu->exitButtonColor = LIGHTGRAY;
+    TextID exit = Exit;
+    InitButton(&exitButton,340,380,140,50,exit,clickSound);
 
     mainMenu->clickSound = clickSound;
 }
@@ -22,40 +21,23 @@ void DrawMainMenu(MainMenuData* mainMenu, Texture2D* bgTexture)
 {
     ClearBackground(RAYWHITE);
     DrawTexture(*bgTexture,0,100,WHITE);
-    DrawRectangleRec(mainMenu->playButton, mainMenu->playButtonColor);
-    DrawText("Play",mainMenu->playButton.x+16,mainMenu->playButton.y+10,32,BLACK);
 
-    DrawRectangleRec(mainMenu->exitButton, mainMenu->exitButtonColor);
-    DrawText("Exit",mainMenu->exitButton.x+16,mainMenu->exitButton.y+10,32,BLACK);
+    bool drawButtonText = true;
+    DrawButton(&playButton,drawButtonText);
+    DrawButton(&exitButton,drawButtonText);
 }
 
 bool IsPlayButtonClicked(MainMenuData* mainMenu,Vector2 mousePosition)
 {
-    mainMenu->playButtonColor = LIGHTGRAY;
-    if(CheckCollisionPointRec(mousePosition, mainMenu->playButton))
-    {
-        mainMenu->playButtonColor = GRAY;
-        if(IsMouseButtonPressed(0))
-        {
-            PlaySound(*(mainMenu->clickSound));
-            return true;
-        }
-    }
+    if(IsButtonClicked(&playButton,mousePosition))
+        return true;
     return false;
 }
 
 bool IsExitButtonClicked(MainMenuData* mainMenu,Vector2 mousePosition)
 {
-    mainMenu->exitButtonColor = LIGHTGRAY;
-    if(CheckCollisionPointRec(mousePosition, mainMenu->exitButton))
-    {
-        mainMenu->exitButtonColor = GRAY;
-        if(IsMouseButtonPressed(0))
-        {
-            PlaySound(*(mainMenu->clickSound));
-            return true;
-        }
-    }
+    if(IsButtonClicked(&exitButton,mousePosition))
+        return true;
     return false;
 }
 

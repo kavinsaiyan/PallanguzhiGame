@@ -19,6 +19,7 @@ const char* GetText(TextID text)
             switch(text)
             {
                 case Play: return "விளையாடு";
+                case Exit: return "வெளியேறு";
                 default:
                     return "";
             }

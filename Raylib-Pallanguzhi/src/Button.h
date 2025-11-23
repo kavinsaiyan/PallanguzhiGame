@@ -13,6 +13,8 @@ typedef struct
     TextID textID;
 } Button;
 
+void InitButton(Button* button,float x,float y, float width, float height, TextID text, Sound* clickSound);
+
 void DrawButton(Button* button, bool drawButtonText);
 
 bool IsButtonClicked(Button* button, Vector2 mousePosition);

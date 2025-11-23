@@ -9,7 +9,8 @@ typedef enum
     Exit,
     YourScore,
     AIScore,
-    Retry
+    Retry,
+    LanguageSelect
 } TextID;
 
 const char* GetText(TextID textID);
