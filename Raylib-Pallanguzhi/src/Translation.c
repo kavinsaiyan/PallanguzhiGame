@@ -18,7 +18,7 @@ const char* GetText(TextID text)
         case Tamil:
             switch(text)
             {
-                case Play: return "விளையாடு";
+                case Play: return u8"விளையாடு";
                 case Exit: return "வெளியேறு";
                 default:
                     return "";

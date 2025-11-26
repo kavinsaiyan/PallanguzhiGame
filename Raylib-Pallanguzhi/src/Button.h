@@ -17,5 +17,7 @@ void InitButton(Button* button,float x,float y, float width, float height, TextI
 
 void DrawButton(Button* button, bool drawButtonText);
 
+void PrintTextSize(Button* button);
+
 bool IsButtonClicked(Button* button, Vector2 mousePosition);
 #endif

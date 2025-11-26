@@ -22,6 +22,9 @@ void DrawMainMenu(MainMenuData* mainMenu, Texture2D* bgTexture)
     ClearBackground(RAYWHITE);
     DrawTexture(*bgTexture,0,100,WHITE);
 
+    //PrintTextSize(&playButton);
+   // PrintTextSize(&exitButton);
+
     bool drawButtonText = true;
     DrawButton(&playButton,drawButtonText);
     DrawButton(&exitButton,drawButtonText);
