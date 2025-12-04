@@ -2,6 +2,8 @@
 - Add BG music
     - Involves learning a DAW
 - Language selection screen
+    - Tamil font Rendering
+    - build for android
 - Add save for highscore and as well as langugage selection
 - Add Tamil font for rendering
 - Multiplayer

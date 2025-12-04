@@ -1,13 +1,13 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -std=c99
-LDFLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+CFLAGS = -Wall -std=c99 -I/usr/local/include/freetype2 -I/usr/local/include/harfbuzz
+LDFLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -L/usr/local/lib -lfreetype -lharfbuzz
 
 # Output file
 TARGET = Game
 
 # Source files
-SRC = src/Game.c src/Board.c src/SlotSelector.c src/Queue.c src/Array.c src/MainMenu.c src/EndScreen.c src/SaveData.c src/Button.c src/Translation.c src/LanguageSelection.c
+SRC = src/Game.c src/Board.c src/SlotSelector.c src/Queue.c src/Array.c src/MainMenu.c src/EndScreen.c src/SaveData.c src/Button.c src/Translation.c src/LanguageSelection.c src/TamilText.c
 
 # Object files
 OBJ = $(SRC:.c=.o)

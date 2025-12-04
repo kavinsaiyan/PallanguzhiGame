@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "Button.h"
 #include <stdlib.h>
+#include "TamilText.h"
 
 const int TAMIL_CHARS_COUNT = 128; // Range 0x0B80 to 0x0BFF
 
@@ -84,7 +85,7 @@ void DrawLanguageSelection()
     //draw the buttons here
     bool drawButtonText = false;
     DrawButton(&tamilButton, drawButtonText);
-    DrawTextEx(tamilFont, "தமிழ்", (Vector2){tamilButton.rect.x + 26, tamilButton.rect.y}, 40, 4, BLACK);
+    DrawTamilText("தமிழ்", (Vector2){tamilButton.rect.x + 26, tamilButton.rect.y}, BLACK);
     DrawButton(&englishButton, drawButtonText);
     DrawTextEx(englishFont, "English", (Vector2){englishButton.rect.x + 6, englishButton.rect.y}, 40, 4, BLACK);
 }

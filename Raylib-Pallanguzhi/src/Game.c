@@ -9,6 +9,7 @@
 #include "MainMenu.h"
 #include "EndScreen.h"
 #include "SaveData.h"
+#include "TamilText.h"
 #include <stdlib.h>
 
 int main(void)
@@ -43,6 +44,7 @@ int main(void)
     Sound clickSound = LoadSound("click.wav");
 
     //Load Fonts and init language selection
+    InitComplexText("Kavivanar-Regular.ttf",26);
     InitializeLanguageSelection(saveData.languageSelected,&clickSound);
 
 #ifndef PLATFORM_ANDROID
@@ -229,6 +231,7 @@ int main(void)
     DestroyQueue(animQ);
 
     DeInitializeLanguageSelection();
+    UnloadComplexText();
 
     UnloadSound(moveSound);    
     UnloadSound(clickSound);    
