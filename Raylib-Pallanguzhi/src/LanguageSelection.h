@@ -14,11 +14,7 @@ void SetLanguageAndLoadedFont(Language language);
 
 Language GetLanguage();
 
-Font* GetFont();
-
 void InitializeLanguageSelection(Language language, Sound* clickSound);
-
-void DeInitializeLanguageSelection();
 
 void DrawLanguageSelection();
 

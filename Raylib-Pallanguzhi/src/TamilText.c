@@ -59,8 +59,10 @@ Image BitmapToImage(FT_Bitmap bitmap)
     return image;
 }
 
-void DrawTamilText(const char *text, Vector2 position, Color color)
+void DrawTamilText(const char *text, Vector2 position, int fontSize, Color color)
 {
+    FT_Set_Char_Size(ft_face, 0, fontSize * 64, 96, 96);
+
     if (!hb_font) return;
 
     // --- A. SHAPING SETUP ---
@@ -78,7 +80,7 @@ void DrawTamilText(const char *text, Vector2 position, Color color)
     float pen_x = position.x;
     float pen_y = position.y;
 
-    TraceLog(LOG_INFO,"glyph count is %d",glyph_count);
+    //TraceLog(LOG_INFO,"glyph count is %d",glyph_count);
 
     // --- B. RASTERIZATION AND DRAWING ---
     for (unsigned int i = 0; i < glyph_count; i++)
@@ -138,14 +140,79 @@ void DrawTamilText(const char *text, Vector2 position, Color color)
     hb_buffer_destroy(buffer);
 }
 
+Vector2 MeasureTamilText(const char *text, int fontSize)
+{
+    FT_Set_Char_Size(ft_face, 0, fontSize * 64, 96, 96);
+
+    if (!hb_font) return (Vector2){0, 0};
+
+    // --- 1. SHAPING SETUP (Same as DrawTamilText) ---
+    hb_buffer_t *buffer = hb_buffer_create();
+    hb_buffer_add_utf8(buffer, text, -1, 0, -1);
+    hb_buffer_set_direction(buffer, HB_DIRECTION_LTR);
+    hb_buffer_set_script(buffer, HB_SCRIPT_TAMIL);
+    hb_buffer_set_language(buffer, hb_language_from_string("ta", -1));
+    hb_shape(hb_font, buffer, NULL, 0);
+
+    unsigned int glyph_count;
+    hb_glyph_info_t *glyph_info = hb_buffer_get_glyph_infos(buffer, &glyph_count);
+    hb_glyph_position_t *glyph_pos = hb_buffer_get_glyph_positions(buffer, &glyph_count);
+
+    float pen_x = 0;
+    float min_y = 0; // Tracks the highest point (most negative Y)
+    float max_y = 0; // Tracks the lowest point (most positive Y)
+
+    // --- 2. Iterate and Calculate Bounds ---
+    for (unsigned int i = 0; i < glyph_count; i++)
+    {
+        FT_UInt glyph_index = glyph_info[i].codepoint;
+        
+        // HarfBuzz offsets (in 26.6 format)
+        float y_offset = (float)(glyph_pos[i].y_offset / 64.0f);
+        float x_advance = (float)(glyph_pos[i].x_advance / 64.0f);
+        
+        // Load the glyph metrics (we don't need the bitmap, just metrics)
+        // FT_LOAD_NO_HINTING is faster when only metrics are needed
+        if (FT_Load_Glyph(ft_face, glyph_index, FT_LOAD_NO_HINTING) != 0) continue;
+
+        // Calculate the top-most (min_y) and bottom-most (max_y) Y position
+        // All values are calculated relative to the baseline (Y=0)
+
+        // 1. Calculate the Y position of the glyph's top and bottom edge
+        // Note: FreeType bitmap_top is distance UP from baseline (positive up).
+        // The coordinate system needs to be flipped for min/max tracking.
+        
+        // The effective top of the glyph relative to the baseline (Screen Y-down)
+        float glyph_top = -y_offset - ft_face->glyph->metrics.horiBearingY / 64.0f; 
+        
+        // The effective bottom of the glyph relative to the baseline (Screen Y-down)
+        // horiBearingY - horiAdvance gives the height.
+        float glyph_bottom = glyph_top + ft_face->glyph->metrics.height / 64.0f; 
+
+        // 2. Track overall min/max bounds
+        if (glyph_top < min_y) min_y = glyph_top;
+        if (glyph_bottom > max_y) max_y = glyph_bottom;
+        
+        // 3. Accumulate total width
+        pen_x += x_advance;
+    }
+    
+    // --- 3. Final Cleanup and Return ---
+    hb_buffer_destroy(buffer);
+
+    return (Vector2){
+        .x = pen_x,
+        .y = max_y - min_y // Total vertical distance from top to bottom
+    };
+}
+
 // ------------------------------------------------------------------------
 // CLEANUP & INIT
 // ------------------------------------------------------------------------
-void InitComplexText(const char *fontPath, int fontSize)
+void InitComplexText(const char *fontPath)
 {
     FT_Init_FreeType(&ft_library);
     FT_New_Face(ft_library, fontPath, 0, &ft_face);
-    FT_Set_Char_Size(ft_face, 0, fontSize * 64, 96, 96);
     hb_font = hb_ft_font_create_referenced(ft_face);
 }
 

@@ -2,45 +2,20 @@
 #include "raylib.h"
 #include "Button.h"
 #include <stdlib.h>
-#include "TamilText.h"
-
-const int TAMIL_CHARS_COUNT = 128; // Range 0x0B80 to 0x0BFF
+#include "TextRender.h"
 
 static Language currentLanguage = English;
-static Font englishFont;
-static Font tamilFont;
-static Font selectedFont;
 
 static Button tamilButton;
 static Button englishButton;
 
 void SetLanguageAndLoadedFont(Language language)
 {
-    TraceLog(LOG_INFO,"language set is %d",language);
     currentLanguage = language;
-    switch(language)
-    {
-        case Tamil:
-            selectedFont = tamilFont;
-            break;
-        case DefaultLanguage:
-        case English:
-            selectedFont = englishFont;
-            break;
-    }
 }
 
 void InitializeLanguageSelection(Language language, Sound* clickSound)
 {
-    //Load tamil font
-    int tamil_chars[TAMIL_CHARS_COUNT];
-    for (int i = 0; i < TAMIL_CHARS_COUNT; i++)
-        tamil_chars[i] = 0x0B80 + i;
-    tamilFont = (LoadFontEx("Kavivanar-Regular.ttf",40,tamil_chars,TAMIL_CHARS_COUNT));
-
-    //Load English font
-    englishFont = (LoadFontEx("TASAExplorer-Regular.ttf",40,NULL,0)); 
-
     SetLanguageAndLoadedFont(language);
 
     tamilButton.rect.x = 320;
@@ -58,36 +33,23 @@ void InitializeLanguageSelection(Language language, Sound* clickSound)
     englishButton.clickSound = clickSound;
 }
 
-void DeInitializeLanguageSelection()
-{
-    UnloadFont(englishFont);
-    UnloadFont(tamilFont);
-}
-
-
 Language GetLanguage()
 {
     return currentLanguage;
 }
-
-Font* GetFont()
-{
-    return &selectedFont;
-}
-
 
 //screen related 
 void DrawLanguageSelection()
 {
     ClearBackground(RAYWHITE);
 
-    DrawTextEx(englishFont,"Select Language", (Vector2) { 220, 200 }, 50, 4 , BLACK);
+    RenderEnglishText("Select Language", (Vector2) { 220, 200 }, 50, BLACK);
     //draw the buttons here
     bool drawButtonText = false;
     DrawButton(&tamilButton, drawButtonText);
-    DrawTamilText("தமிழ்", (Vector2){tamilButton.rect.x + 26, tamilButton.rect.y}, BLACK);
+    RenderTamilText("தமிழ்", (Vector2){tamilButton.rect.x + 26, tamilButton.rect.y}, 40, BLACK);
     DrawButton(&englishButton, drawButtonText);
-    DrawTextEx(englishFont, "English", (Vector2){englishButton.rect.x + 6, englishButton.rect.y}, 40, 4, BLACK);
+    RenderEnglishText("English", (Vector2){englishButton.rect.x + 6, englishButton.rect.y}, 40, BLACK);
 }
 
 Language UpdateLanguageSelection(Vector2 mousePosition)

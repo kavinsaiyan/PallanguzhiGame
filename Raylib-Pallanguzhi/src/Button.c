@@ -2,6 +2,7 @@
 #include "Button.h"
 #include "LanguageSelection.h"
 #include "Translation.h"
+#include "TextRender.h"
 
 void InitButton(Button* button,float x,float y, float width, float height, TextID textID, Sound* clickSound)
 {
@@ -19,7 +20,7 @@ void InitButton(Button* button,float x,float y, float width, float height, TextI
 void PrintTextSize(Button* button)
 {
     const char* text = GetText(button->textID);
-    Vector2 size = MeasureTextEx(*GetFont(),text,32,0);
+    Vector2 size = MeasureTextDirect(text,32);
     TraceLog(LOG_INFO,"size of text is x : %f y : %f for %s",size.x,size.y,text);
     TraceLog(LOG_INFO,"pos is x : %f and y : %f",button->rect.x,button->rect.y);
     TraceLog(LOG_INFO,"width is : %f and height : %f",button->rect.width,button->rect.height);
@@ -33,12 +34,12 @@ void DrawButton(Button* button, bool drawButtonText)
         return;
 
     const char* text = GetText(button->textID);
-    Vector2 size = MeasureTextEx(*GetFont(),text,32,0);
+    Vector2 size = MeasureTextDirect(text,32);
 
     Vector2 textPos;
     textPos.x = ((button->rect.x*2+button->rect.width)/2.0f) - (size.x/2.0f);
     textPos.y = button->rect.y+8;
-    DrawTextEx(*GetFont(),text,textPos,32,0,BLACK);
+    RenderTextDirect(text,textPos,32,BLACK);
 }
 
 bool IsButtonClicked(Button* button, Vector2 mousePosition)

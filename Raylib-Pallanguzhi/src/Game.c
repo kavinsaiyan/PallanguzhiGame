@@ -11,6 +11,7 @@
 #include "SaveData.h"
 #include "TamilText.h"
 #include <stdlib.h>
+#include "TextRender.h"
 
 int main(void)
 {
@@ -44,7 +45,7 @@ int main(void)
     Sound clickSound = LoadSound("click.wav");
 
     //Load Fonts and init language selection
-    InitComplexText("Kavivanar-Regular.ttf",26);
+    InitText();
     InitializeLanguageSelection(saveData.languageSelected,&clickSound);
 
 #ifndef PLATFORM_ANDROID
@@ -230,7 +231,6 @@ int main(void)
     //--------------------------------------------------------------------------------------
     DestroyQueue(animQ);
 
-    DeInitializeLanguageSelection();
     UnloadComplexText();
 
     UnloadSound(moveSound);    
