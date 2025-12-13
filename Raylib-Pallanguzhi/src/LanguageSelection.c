@@ -43,13 +43,13 @@ void DrawLanguageSelection()
 {
     ClearBackground(RAYWHITE);
 
-    RenderEnglishText("Select Language", (Vector2) { 220, 200 }, 50, BLACK);
+    RenderEnglishText("Select Language", (Vector2) { 220, 200 }, BLACK);
     //draw the buttons here
     bool drawButtonText = false;
     DrawButton(&tamilButton, drawButtonText);
-    RenderTamilText("தமிழ்", (Vector2){tamilButton.rect.x + 26, tamilButton.rect.y}, 40, BLACK);
+    RenderTamilText("தமிழ்", (Vector2){tamilButton.rect.x + 6 , tamilButton.rect.y}, BLACK);
     DrawButton(&englishButton, drawButtonText);
-    RenderEnglishText("English", (Vector2){englishButton.rect.x + 6, englishButton.rect.y}, 40, BLACK);
+    RenderEnglishText("English", (Vector2){englishButton.rect.x + 6, englishButton.rect.y}, BLACK);
 }
 
 Language UpdateLanguageSelection(Vector2 mousePosition)

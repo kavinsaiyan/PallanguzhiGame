@@ -52,11 +52,6 @@ int main(void)
 	ChangeDirectory("..");
 #endif
 
-    //Initialize Game State
-    GameStateData gameStateData;
-    InitializeGameStateData(&gameStateData,&saveData);
-    Queue* animQ = CreateQueue();
-
     //Initialize Menus
     MainMenuData mainMenu;
     InitializeMainMenu(&mainMenu,&clickSound);
@@ -71,6 +66,11 @@ int main(void)
     SlotSelector slotSelector;
     slotSelector.currentIndex =(int)(TOTAL_SLOTS * 0.75f);
     slotSelector.renderState = Render;
+
+    //Initialize Game State
+    GameStateData gameStateData;
+    InitializeGameStateData(&gameStateData,&saveData);
+    Queue* animQ = CreateQueue();
 
     //timer 
     float timer = 0;
@@ -196,9 +196,10 @@ int main(void)
                  Language selected = UpdateLanguageSelection(mousePosition);
                  if(selected != DefaultLanguage)
                  {
-                    gameStateData.state = MainMenu;
                     saveData.languageSelected = selected;
                     WriteSaveData(&saveData);
+                    gameStateData.state = MainMenu;
+                    InitializeMainMenuForDrawing();
                  }
                  break;
         }
@@ -257,7 +258,10 @@ void InitializeGameStateData(GameStateData* gameStateData, SaveData* saveData)
     if(saveData->languageSelected == DefaultLanguage)
         gameStateData->state = LanguageSelection;
     else
+    {
+        InitializeMainMenuForDrawing();
         gameStateData->state = MainMenu;
+    }
 }
 
 void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex)

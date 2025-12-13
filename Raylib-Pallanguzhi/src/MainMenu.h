@@ -26,5 +26,5 @@ bool IsPlayButtonClicked(MainMenuData* mainMenu,Vector2 mousePosition);
 
 bool IsExitButtonClicked(MainMenuData* mainMenu,Vector2 mousePosition);
 
-void DeInitializeMainMenu(MainMenuData* mainMenu);
+void InitializeMainMenuForDrawing();
 #endif

@@ -5,13 +5,14 @@
 #include <stdlib.h>
 
 static Font englishFont;
+static int fontSize = 40; // default font size // This cannot be changed afterwards for now
 
 void InitText()
 {
-    InitComplexText("Kavivanar-Regular.ttf");
+    InitComplexText("Kavivanar-Regular.ttf",fontSize);
 
     //Load English Font
-    englishFont = (LoadFontEx("TASAExplorer-Regular.ttf",40,NULL,0)); 
+    englishFont = (LoadFontEx("TASAExplorer-Regular.ttf", fontSize, NULL,0)); 
 }
 
 void DeInitText()
@@ -20,7 +21,7 @@ void DeInitText()
     UnloadFont(englishFont);
 }
 
-void RenderText(TextID textID, Vector2 position, int fontSize, Color color)
+void RenderText(TextID textID, Vector2 position, Color color)
 {
     const char* text = GetText(textID);
     switch(GetLanguage())
@@ -30,12 +31,12 @@ void RenderText(TextID textID, Vector2 position, int fontSize, Color color)
             DrawTextEx(englishFont, text, position, fontSize, 4, color);
             break;
         case Tamil:
-            DrawTamilText(text,position,fontSize,color);
+            DrawTamilText(text,position,color);
             break;
     }
 }
 
-void RenderTextDirect(const char* text, Vector2 position, int fontSize, Color color)
+void RenderTextDirect(const char* text, Vector2 position, Color color)
 {
     switch(GetLanguage())
     {
@@ -44,22 +45,22 @@ void RenderTextDirect(const char* text, Vector2 position, int fontSize, Color co
             DrawTextEx(englishFont, text, position, fontSize, 4, color);
             break;
         case Tamil:
-            DrawTamilText(text,position,fontSize,color);
+            DrawTamilText(text,position,color);
             break;
     }
 }
 
-void RenderEnglishText(const char* text, Vector2 position, int fontSize, Color color)
+void RenderEnglishText(const char* text, Vector2 position, Color color)
 {
     DrawTextEx(englishFont, text, position, fontSize, 4, color);
 }
 
-void RenderTamilText(const char* text, Vector2 position, int fontSize, Color color)
+void RenderTamilText(const char* text, Vector2 position, Color color)
 {
-    DrawTamilText(text,position,fontSize,color);
+    DrawTamilText(text,position,color);
 }
 
-Vector2 MeasureTextDirect(const char* text, int fontSize)
+Vector2 MeasureTextDirect(const char* text)
 {
     switch(GetLanguage())
     {
@@ -67,7 +68,7 @@ Vector2 MeasureTextDirect(const char* text, int fontSize)
         case English:
             return MeasureTextEx(englishFont,text,fontSize,0); // setting spacing to zero 
         case Tamil:
-            return MeasureTamilText(text,fontSize);
+            return MeasureTamilText(text);
     }
     return (Vector2) { 0, 0 };
 }

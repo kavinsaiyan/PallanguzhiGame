@@ -9,21 +9,24 @@ static Button exitButton;
 void InitializeMainMenu(MainMenuData* mainMenu, Sound* clickSound)
 {
     TextID play = Play;
-    InitButton(&playButton,340,300,140,50,play,clickSound);
+    InitButton(&playButton,400,300,140,50,play,clickSound);
 
     TextID exit = Exit;
-    InitButton(&exitButton,340,380,140,50,exit,clickSound);
+    InitButton(&exitButton,400,380,140,50,exit,clickSound);
 
     mainMenu->clickSound = clickSound;
+}
+
+void InitializeMainMenuForDrawing()
+{
+   ResizeButtonForText(&playButton);
+   ResizeButtonForText(&exitButton);
 }
 
 void DrawMainMenu(MainMenuData* mainMenu, Texture2D* bgTexture)
 {
     ClearBackground(RAYWHITE);
     DrawTexture(*bgTexture,0,100,WHITE);
-
-    //PrintTextSize(&playButton);
-   // PrintTextSize(&exitButton);
 
     bool drawButtonText = true;
     DrawButton(&playButton,drawButtonText);
@@ -42,8 +45,4 @@ bool IsExitButtonClicked(MainMenuData* mainMenu,Vector2 mousePosition)
     if(IsButtonClicked(&exitButton,mousePosition))
         return true;
     return false;
-}
-
-void DeInitializeMainMenu(MainMenuData* mainMenu)
-{
 }

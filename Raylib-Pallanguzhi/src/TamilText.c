@@ -10,7 +10,7 @@
 #include <hb.h>
 #include <hb-ft.h>
 
-// --- Simple Array Cache (DANGEROUS but requested) ---
+// --- Simple Array Cache
 #define MAX_GLYPHS 512 
 Texture2D glyphCache[MAX_GLYPHS] = { 0 };
 
@@ -19,9 +19,8 @@ FT_Library ft_library;
 FT_Face ft_face;
 hb_font_t *hb_font;
 
-// ------------------------------------------------------------------------
-// CORRECT BitmapToImage (RGBA for Transparency)
-// ------------------------------------------------------------------------
+static int fontSize = 40; // default font size
+
 Image BitmapToImage(FT_Bitmap bitmap)
 {
     Image image = { 0 };
@@ -38,7 +37,7 @@ Image BitmapToImage(FT_Bitmap bitmap)
     image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8; 
 
     Color *pixels = (Color*)RL_CALLOC(image.width*image.height,sizeof(Color));
-    //TraceLog(LOG_INFO, "Size of pixels is %d", image.width*image.height);
+    TraceLog(LOG_INFO, "Size of pixels is %d", image.width*image.height);
 
     for (int y = 0; y < bitmap.rows; y++)
     {
@@ -59,10 +58,8 @@ Image BitmapToImage(FT_Bitmap bitmap)
     return image;
 }
 
-void DrawTamilText(const char *text, Vector2 position, int fontSize, Color color)
+void DrawTamilText(const char *text, Vector2 position, Color color)
 {
-    FT_Set_Char_Size(ft_face, 0, fontSize * 64, 96, 96);
-
     if (!hb_font) return;
 
     // --- A. SHAPING SETUP ---
@@ -78,7 +75,7 @@ void DrawTamilText(const char *text, Vector2 position, int fontSize, Color color
     hb_glyph_position_t *glyph_pos = hb_buffer_get_glyph_positions(buffer, &glyph_count);
     
     float pen_x = position.x;
-    float pen_y = position.y;
+    float pen_y = position.y + fontSize;
 
     //TraceLog(LOG_INFO,"glyph count is %d",glyph_count);
 
@@ -124,15 +121,11 @@ void DrawTamilText(const char *text, Vector2 position, int fontSize, Color color
             glyphCache[glyph_index] = glyphTexture;
         }
 
-        // 10. Draw the texture at the calculated position
         float draw_x = pen_x + x_offset + ft_face->glyph->bitmap_left;
-        
-        // Subtract y_offset to move UP
-        float draw_y = pen_y - y_offset - ft_face->glyph->bitmap_top; 
+        float draw_y = pen_y + y_offset - ft_face->glyph->bitmap_top; 
         
         DrawTexture(glyphTexture, (int)draw_x, (int)draw_y, color);
 
-        // 12. Advance the drawing pen position
         pen_x += x_advance;
     }
     
@@ -140,10 +133,8 @@ void DrawTamilText(const char *text, Vector2 position, int fontSize, Color color
     hb_buffer_destroy(buffer);
 }
 
-Vector2 MeasureTamilText(const char *text, int fontSize)
+Vector2 MeasureTamilText(const char *text)
 {
-    FT_Set_Char_Size(ft_face, 0, fontSize * 64, 96, 96);
-
     if (!hb_font) return (Vector2){0, 0};
 
     // --- 1. SHAPING SETUP (Same as DrawTamilText) ---
@@ -209,10 +200,15 @@ Vector2 MeasureTamilText(const char *text, int fontSize)
 // ------------------------------------------------------------------------
 // CLEANUP & INIT
 // ------------------------------------------------------------------------
-void InitComplexText(const char *fontPath)
+void InitComplexText(const char *fontPath, const int fntSize)
 {
+    fontSize = fntSize;
+	// Clear cache
+    for(int i=0; i<MAX_GLYPHS; i++) glyphCache[i].id = 0;
+
     FT_Init_FreeType(&ft_library);
     FT_New_Face(ft_library, fontPath, 0, &ft_face);
+    FT_Set_Char_Size(ft_face, 0, fontSize * 64, 96, 96);
     hb_font = hb_ft_font_create_referenced(ft_face);
 }
 
