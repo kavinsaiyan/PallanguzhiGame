@@ -4,8 +4,10 @@
 #include "raylib.h"
 #include <stdlib.h>
 
+#define ENGLISH_FONT_EXTRA_FONT_SIZE 8
+
 static Font englishFont;
-static int fontSize = 40; // default font size // This cannot be changed afterwards for now
+static int fontSize = 32; // default font size // This cannot be changed afterwards for now
 
 void InitText()
 {
@@ -28,7 +30,7 @@ void RenderText(TextID textID, Vector2 position, Color color)
     {
         case DefaultLanguage:
         case English:
-            DrawTextEx(englishFont, text, position, fontSize, 4, color);
+            DrawTextEx(englishFont, text, position, fontSize + ENGLISH_FONT_EXTRA_FONT_SIZE , 4, color);
             break;
         case Tamil:
             DrawTamilText(text,position,color);
@@ -42,7 +44,7 @@ void RenderTextDirect(const char* text, Vector2 position, Color color)
     {
         case DefaultLanguage:
         case English:
-            DrawTextEx(englishFont, text, position, fontSize, 4, color);
+            DrawTextEx(englishFont, text, position, fontSize + ENGLISH_FONT_EXTRA_FONT_SIZE , 4, color);
             break;
         case Tamil:
             DrawTamilText(text,position,color);
@@ -52,7 +54,7 @@ void RenderTextDirect(const char* text, Vector2 position, Color color)
 
 void RenderEnglishText(const char* text, Vector2 position, Color color)
 {
-    DrawTextEx(englishFont, text, position, fontSize, 4, color);
+    DrawTextEx(englishFont, text, position, fontSize + ENGLISH_FONT_EXTRA_FONT_SIZE , 4, color);
 }
 
 void RenderTamilText(const char* text, Vector2 position, Color color)
@@ -66,7 +68,7 @@ Vector2 MeasureTextDirect(const char* text)
     {
         case DefaultLanguage:
         case English:
-            return MeasureTextEx(englishFont,text,fontSize,0); // setting spacing to zero 
+            return MeasureTextEx(englishFont,text,fontSize+ENGLISH_FONT_EXTRA_FONT_SIZE ,0); // setting spacing to zero 
         case Tamil:
             return MeasureTamilText(text);
     }

@@ -42,7 +42,7 @@ void ResizeButtonForText(Button* button)
 
     //Assigning Text pos
     Vector2 textPos;
-    textPos.x = button->center.x - (button->textSize.x/2.0f) - padding/4.0f;
+    textPos.x = button->center.x - (button->textSize.x/2.0f) - padding/3.0f;
     textPos.y = button->center.y - (button->textSize.y/2.0f);
     button->textPos = textPos;
 

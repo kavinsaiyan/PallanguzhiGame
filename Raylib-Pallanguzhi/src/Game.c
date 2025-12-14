@@ -53,10 +53,8 @@ int main(void)
 #endif
 
     //Initialize Menus
-    MainMenuData mainMenu;
-    InitializeMainMenu(&mainMenu,&clickSound);
-    EndScreen endScreen;
-    InitializeEndScreen(&endScreen,&clickSound);
+    InitializeMainMenu(&clickSound);
+    InitializeEndScreen(&clickSound);
 
     //Initialize the board
     Board board;
@@ -113,6 +111,7 @@ int main(void)
                 if(gameStateData.playerWon != -1)
                 {
                     gameStateData.state = GameOver;
+                    PrepareEndScreenForDrawing();
                     break;
                 }
 
@@ -131,7 +130,7 @@ int main(void)
                 break;
             case Animating:
                 timer += dt;
-                if(timer > 0.4f)
+                if(timer > 0.1f)
                 {
                     timer = 0;
                     PlaySound(moveSound);
@@ -177,7 +176,7 @@ int main(void)
                 }
                 break;
             case GameOver: 
-                if(IsRetryButtonClicked(&endScreen,mousePosition))
+                if(IsRetryButtonClicked(mousePosition))
                 {
                     gameStateData.state = PlayerMove;
                     gameStateData.playerTurn = Player1Turn;
@@ -187,9 +186,9 @@ int main(void)
                 }
                 break;
             case MainMenu:
-                if(IsPlayButtonClicked(&mainMenu,mousePosition))
+                if(IsPlayButtonClicked(mousePosition))
                     gameStateData.state = PlayerMove;
-                if(IsExitButtonClicked(&mainMenu,mousePosition))
+                if(IsExitButtonClicked(mousePosition))
                     exitWindow = true;
                 break;
             case LanguageSelection:
@@ -215,10 +214,10 @@ int main(void)
                 DrawBoardGame(&board,&slotSelector,&boardTexture,&ballTexture,&slotSelectorTexture, gameStateData.playerTurn);
                 break;
             case GameOver:
-                DrawEndScreen(&endScreen,board.player1Score,board.player2Score,gameStateData.playerWon);
+                DrawEndScreen(board.player1Score,board.player2Score,gameStateData.playerWon);
                 break;
             case MainMenu:
-                DrawMainMenu(&mainMenu,&mainMenuBGTexture);
+                DrawMainMenu(&mainMenuBGTexture);
                 break;
             case LanguageSelection:
                 DrawLanguageSelection();
@@ -234,8 +233,8 @@ int main(void)
 
     UnloadComplexText();
 
-    UnloadSound(moveSound);    
-    UnloadSound(clickSound);    
+    UnloadSound(moveSound);
+    UnloadSound(clickSound);
     CloseAudioDevice();
 
     UnloadTexture(ballTexture);
@@ -281,10 +280,13 @@ void DrawBoardGame(Board* board,SlotSelector* slotSelector, Texture2D* boardText
     DrawSlotSelector(slotSelector, slotSelectorTexture, board->slots[slotSelector->currentIndex].position);
 
     if(playerTurn == Player1Turn)    
-        DrawText("Your Turn",300,600,26,BLACK);
+        RenderText(YourTurn,(Vector2){260,600},BLACK);
     else 
-        DrawText("AI Turn",300,100,26,BLACK);
+        RenderText(AITurn,(Vector2){260,120},BLACK);
 
-    DrawText(TextFormat("Your Score : %d",board->player1Score),10,100,26,BLACK);
-    DrawText(TextFormat("AI Score : %d",board->player2Score),10,130,26,BLACK);
+    Vector2 playerScorePos = { 10, 30 };
+    RenderTextDirect(TextFormat(GetText(YourScore),board->player1Score),playerScorePos,BLACK);
+    
+    playerScorePos.y += 40;
+    RenderTextDirect(TextFormat(GetText(AIScore),board->player2Score),playerScorePos,BLACK);
 }

@@ -3,16 +3,11 @@
 #ifndef ENDSCREEN_H
 #define ENDSCREEN_H
 
-typedef struct 
-{
-    Rectangle retryButton;
-    Color retryButtonColor;
-    Sound* clickSound;
-} EndScreen;
+void InitializeEndScreen(Sound* clickSound);
 
-void InitializeEndScreen(EndScreen* endScreen,Sound* clickSound);
+void PrepareEndScreenForDrawing();
 
-void DrawEndScreen(EndScreen* endScreen, int player1Score, int player2Score, int playerWon);
+void DrawEndScreen(int player1Score, int player2Score, int playerWon);
 
-bool IsRetryButtonClicked(EndScreen* endScreen, Vector2 mousePosition);
+bool IsRetryButtonClicked(Vector2 mousePosition);
 #endif

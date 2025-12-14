@@ -1,42 +1,37 @@
 #include "raylib.h"
+#include "Button.h"
 #include "EndScreen.h"
+#include "TextRender.h"
 
-void InitializeEndScreen(EndScreen* endScreen, Sound* clickSound)
+static Button retryButton;
+
+void InitializeEndScreen(Sound* clickSound)
 {
-    endScreen->retryButton.x=320;
-    endScreen->retryButton.y=300;
-    endScreen->retryButton.width = 120;
-    endScreen->retryButton.height = 50;
-    endScreen->retryButtonColor = LIGHTGRAY;
-    endScreen->clickSound = clickSound;
+    TextID retryText = Retry;
+    InitButton(&retryButton,360,320,120,50,retryText ,clickSound);
 }
 
-void DrawEndScreen(EndScreen* endScreen, int player1Score, int player2Score, int playerWon)
+void PrepareEndScreenForDrawing()
+{
+    ResizeButtonForText(&retryButton);
+} 
+
+void DrawEndScreen(int player1Score, int player2Score, int playerWon)
 {
     ClearBackground(RAYWHITE);
-    DrawText(TextFormat("Your Score : %d",player1Score),300,100,16,BLACK);
-    DrawText(TextFormat("AI Score : %d",player2Score),300,120,16,BLACK);
+    RenderTextDirect(TextFormat(GetText(YourScore),player1Score),(Vector2){200,100},BLACK);
+    RenderTextDirect(TextFormat(GetText(AIScore),player2Score),(Vector2){200,160},BLACK);
     if(playerWon == 0)
-        DrawText("You Won!",300,160,16,BLACK);
-    else 
-        DrawText("You lost!",300,160,16,BLACK);
+        RenderText(YouWon,(Vector2){200,220},BLACK);
+    else
+        RenderText(YouLost,(Vector2){200,220},BLACK);
 
-    DrawRectangleRec(endScreen->retryButton, endScreen->retryButtonColor);
-    DrawText("Retry",endScreen->retryButton.x+16,endScreen->retryButton.y+10,32,BLACK);
+    DrawButton(&retryButton,true);
 }
 
-bool IsRetryButtonClicked(EndScreen* endScreen, Vector2 mousePosition)
+bool IsRetryButtonClicked(Vector2 mousePosition)
 {
-    endScreen->retryButtonColor = LIGHTGRAY;
-    if(CheckCollisionPointRec(mousePosition, endScreen->retryButton))
-    {
-        endScreen->retryButtonColor = GRAY;
-        if(IsMouseButtonPressed(0))
-        {
-            PlaySound(*(endScreen->clickSound));
-            return true;
-        }
-    }
-
+    if(IsButtonClicked(&retryButton, mousePosition))
+        return true; 
     return false;
 }
