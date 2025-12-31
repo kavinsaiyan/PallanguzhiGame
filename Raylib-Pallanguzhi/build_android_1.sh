@@ -131,7 +131,7 @@ for ABI in $ABIS; do
     done
     
     # Font driver modules
-    for module in autofit truetype cff type1cid psaux psnames pshinter raster sfnt smooth bdf pcf pfr type1 type42 winfonts gzip lzw; do
+    for module in autofit truetype cff cid psaux psnames pshinter raster sfnt smooth bdf pcf pfr type1 type42 winfonts gzip lzw; do
         file="$FREETYPE_SRC/src/$module/$module.c"
         if [ -f "$file" ]; then
             $CC -c $file -o build/$ABI/freetype/${module}.o \
@@ -185,7 +185,7 @@ for ABI in $ABIS; do
     # --- 5. LINK THE FINAL PROJECT ---
     # Note: Linker order is CRITICAL: libmain -> harfbuzz -> freetype
     $TOOLCHAIN/bin/ld.lld build/$ABI/src/*.o -o android/build/lib/$ABI/libmain.so -shared \
-        --build-id \
+        --exclude-libs libatomic.a --build-id \
         -z noexecstack -z relro -z now \
         --warn-shared-textrel --fatal-warnings -u ANativeActivity_onCreate \
         -L$TOOLCHAIN/sysroot/usr/lib/$LIBPATH/29 \
@@ -235,8 +235,6 @@ if [ -n "$KEYSTORE_PASS" ]; then
 else
     echo "WARNING: KEYSTORE_PASS environment variable not set. Please sign manually or set the password."
     echo "You can sign with: apksigner sign --ks android/saiyan.keystore --out my-app-release.apk game.apk"
-    # For development, uncomment the line below (NOT RECOMMENDED for production)
-    # apksigner sign --ks android/saiyan.keystore --out my-app-release.apk --ks-pass pass:Saiyan78# game.apk
     exit 1
 fi
 

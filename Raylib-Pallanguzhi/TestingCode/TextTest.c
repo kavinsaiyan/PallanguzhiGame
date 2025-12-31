@@ -86,7 +86,7 @@ void DrawTamilText(const char *text, Vector2 position, int fontSize, Color color
     float pen_x = position.x;
     float pen_y = position.y + fontSize;
 
-    TraceLog(LOG_INFO,"glyph count is %d",glyph_count);
+    //TraceLog(LOG_INFO,"glyph count is %d",glyph_count);
 
     // --- B. RASTERIZATION AND DRAWING ---
     for (unsigned int i = 0; i < glyph_count; i++)
@@ -197,7 +197,7 @@ int main(void)
     {
         BeginDrawing();
         
-        if(!drawOnce)
+        //if(!drawOnce)
         {
             ClearBackground(RAYWHITE);
             DrawTamilText("வணக்கம் உலகம்", (Vector2){100, 100}, 40, BLACK);
