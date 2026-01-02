@@ -19,6 +19,15 @@ def isAtLeastOnePropertyTrueForPrefix(String prefix) {
     }
 }
 
+// Load local.properties
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { stream ->
+        localProperties.load(stream)
+    }
+}
+
 // Returns the hexadecimal code of the desired OpenGL version
 // Used to retrieve the code to write in the AndroidManifest.xml
 static def getGLVersionCode(String version) {
@@ -82,7 +91,15 @@ android {
             }
         }
     }
-
+    
+    signingConfigs {
+        release {
+            storeFile file(localProperties.getProperty('RELEASE_STORE_FILE'))
+            storePassword localProperties.getProperty('RELEASE_STORE_PASSWORD')
+            keyAlias localProperties.getProperty('RELEASE_KEY_ALIAS')
+            keyPassword localProperties.getProperty('RELEASE_KEY_PASSWORD')
+        }
+    }
 
     buildTypes {
         debug {
@@ -92,6 +109,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             debuggable false
