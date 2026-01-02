@@ -1,15 +1,37 @@
-*.o
-*.out
-*.swp
+# Gradle files
+.gradle/
+build/
+
+#Android SDK
+sdk/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Log/OS Files
+*.log
+
+# Android Studio generated files and folders
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+output.json
+
+# IntelliJ
+*.iml
+.idea/
+!.idea/compiler.xml
+!.idea/gradle.xml
+!.idea/misc.xml
+!.idea/vcs.xml
+
+# Keystore files
+*.jks
 *.keystore
-Game
-raylib/*
-*.apk*
-android/ndk/*
-android/sdk/*
-android/build/assets/*
-android/build/dex/*
-android/build/lib/*
-android/build/obj/*
-android/build/res/*
-SaveData/*
+
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+
+# Android Profiling
+*.hprof

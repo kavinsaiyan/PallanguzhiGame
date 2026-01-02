@@ -1,3 +1,9 @@
-[submodule "Raylib-Pallanguzhi/raylib"]
-	path = Raylib-Pallanguzhi/raylib
-	url = https://github.com/raysan5/raylib
+[submodule "Raylib-Pallanguzhi/app/src/main/cpp/deps/freetype"]
+	path = Raylib-Pallanguzhi/app/src/main/cpp/deps/freetype
+	url = https://github.com/freetype/freetype.git
+[submodule "Raylib-Pallanguzhi/app/src/main/cpp/deps/harfbuzz"]
+	path = Raylib-Pallanguzhi/app/src/main/cpp/deps/harfbuzz
+	url = https://github.com/harfbuzz/harfbuzz.git
+[submodule "Raylib-Pallanguzhi/app/src/main/cpp/deps/raylib"]
+	path = Raylib-Pallanguzhi/app/src/main/cpp/deps/raylib
+	url = https://github.com/raysan5/raylib.git
