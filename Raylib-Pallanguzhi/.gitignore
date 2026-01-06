@@ -1,3 +1,11 @@
+# Linux C build files
+*.o
+Game
+app/src/main/savefile.dat
+
+# Android Adb logcat output
+logs.txt
+
 # Gradle files
 .gradle/
 build/

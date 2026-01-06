@@ -46,7 +46,7 @@ void ResizeButtonForText(Button* button)
     textPos.y = button->center.y - (button->textSize.y/2.0f);
     button->textPos = textPos;
 
-    PrintSize(button);
+    //PrintSize(button);
 }
 
 void DrawButton(Button* button, bool drawButtonText)
