@@ -14,8 +14,14 @@ int clientCount = 0;
 void send_msg(zsock_t *responder,char *identity, char *msg)
 {
     zstr_sendm(responder,identity);
-    //zstr_sendm(responder,"");
     zstr_send(responder,msg);
+}
+
+void send_msg2(zsock_t *responder,char *identity, char *msg, char *msg2)
+{
+    zstr_sendm(responder,identity);
+    zstr_sendm(responder,msg);
+    zstr_send(responder,msg2);
 }
 
 char* GetOtherClient(char* identity)
@@ -57,17 +63,9 @@ int main (void)
             char *identity = zstr_recv(responder);
             if (!identity) continue;
 
-            //char *empty = zstr_recv(responder);
-            //if(strcmp(empty,"")!=0)
-            //{
-              // zstr_free(&identity);
-               // continue; 
-            //}
-            
             char *msg = zstr_recv(responder);
             if (!msg) {
                 zstr_free(&identity);
-                //zstr_free(&empty);
                 continue;
             }
             
@@ -92,16 +90,23 @@ int main (void)
             }
             else if(strcmp(msg,"RELAY") == 0)
             {
-                char* idToSendRelayMsg = GetOtherClient(identity);
+                //need to receive the next message to be relayed
+                char *msgToRelay = zstr_recv(responder);
+                if(msgToRelay == NULL)
+                {
+                    zstr_free(&identity);
+                    zstr_free(&msg);
+                    continue;
+                }
+                char *idToSendRelayMsg = GetOtherClient(identity);
                 if(idToSendRelayMsg != NULL)
                 {
 					printf("Sending relay message to %s\n",idToSendRelayMsg);
-                    send_msg(responder,idToSendRelayMsg,"RELAY");
+                    send_msg2(responder,idToSendRelayMsg,"RELAY",msgToRelay);
                 }
             }
             
             zstr_free(&identity);
-            //zstr_free(&empty);
             zstr_free(&msg);
         }
     }

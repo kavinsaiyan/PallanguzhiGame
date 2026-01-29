@@ -22,7 +22,7 @@ int main (void)
     zsock_set_identity(requester, identity);
     
     // Now connect
-    zsock_connect(requester, "tcp://localhost:5555");
+    zsock_connect(requester, "tcp://140.245.225.75:5555");
     
     // Send message
     zstr_send(requester, "JOIN");
