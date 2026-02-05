@@ -12,6 +12,7 @@
 #include "TamilText.h"
 #include <stdlib.h>
 #include "TextRender.h"
+#include "Client.h"
 
 int main(void)
 {
@@ -74,6 +75,9 @@ int main(void)
     //timer 
     float timer = 0;
     int indexOfBeadToMove;
+
+    //test connection
+    test_connect();
     
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -84,6 +88,10 @@ int main(void)
         // Update
         float dt = GetFrameTime();
         Vector2 mousePosition = GetMousePosition();
+
+        //test receive message
+        if(try_receive_reply(dt))
+            TraceLog(LOG_INFO,"message received from server\n");
 
         // Check for window close
         if(IsKeyPressed(KEY_ESCAPE) || WindowShouldClose()) exitWindow = true;
@@ -230,6 +238,8 @@ int main(void)
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    close_connection();
+
     DestroyQueue(animQ);
 
     UnloadComplexText();

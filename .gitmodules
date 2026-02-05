@@ -7,3 +7,6 @@
 [submodule "Raylib-Pallanguzhi/app/src/main/cpp/deps/raylib"]
 	path = Raylib-Pallanguzhi/app/src/main/cpp/deps/raylib
 	url = https://github.com/raysan5/raylib.git
+[submodule "Raylib-Pallanguzhi/app/src/main/cpp/deps/zeromq/czmq"]
+	path = Raylib-Pallanguzhi/app/src/main/cpp/deps/zeromq/czmq
+	url = https://github.com/zeromq/czmq.git
