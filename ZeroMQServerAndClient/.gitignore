@@ -1,3 +1,5 @@
 *.o
 conCommands.txt
 *.key
+client
+server

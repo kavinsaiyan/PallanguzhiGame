@@ -11,6 +11,11 @@ Room rooms[1024] = { 0 };
 int roomCount = 0;
 int clientCount = 0;
 
+const char* RELAY = "RELAY";
+const char* JOIN = "JOIN";
+const char* WAIT = "WAIT";
+const char* MOVE = "MOVE";
+
 void send_msg(zsock_t *responder,char *identity, char *msg)
 {
     zstr_sendm(responder,identity);
@@ -38,7 +43,6 @@ char* GetOtherClient(char* identity)
 
 int main (void)
 {
-    // Use CZMQ's built-in interrupt handling
     zsys_catch_interrupts();
     
     zsock_t *responder = zsock_new_router("tcp://*:5555");
@@ -46,7 +50,6 @@ int main (void)
     printf("Server listening on port 5555...\n");
     printf("Press Ctrl+C to shutdown gracefully\n");
     
-    // Create a poller
     zpoller_t *poller = zpoller_new(responder, NULL);
     
     while (!zsys_interrupted)
@@ -71,24 +74,26 @@ int main (void)
             
             printf("Got identity: '%s', msg: '%s'\n", identity, msg);
             
-            if(strcmp(msg, "JOIN") == 0)
+            if(strcmp(msg, JOIN) == 0)
             {
                 if(clientCount % 2 == 0)
                 {
                     roomCount++;
                     rooms[roomCount-1].client1 = strdup(identity);
-                    send_msg(responder, identity,"SUCCESS");
+                    send_msg(responder, identity,WAIT);
                 }
                 else 
                 {
                     rooms[roomCount-1].client2 = strdup(identity);
-                    send_msg(responder, identity,"START");
+                    send_msg(responder, identity,WAIT);
+
+                    send_msg(responder, rooms[roomCount-1].client1, MOVE); 
                 }
-                printf("Sending SUCCESS to: %s\n", identity);                
+                printf("Sending WAIT to: %s who is client no: %d\n", identity, clientCount);
                 
                 clientCount++;
             }
-            else if(strcmp(msg,"RELAY") == 0)
+            else if(strcmp(msg,RELAY) == 0)
             {
                 //need to receive the next message to be relayed
                 char *msgToRelay = zstr_recv(responder);
@@ -98,12 +103,17 @@ int main (void)
                     zstr_free(&msg);
                     continue;
                 }
+
+                //sending the received message to other client
                 char *idToSendRelayMsg = GetOtherClient(identity);
                 if(idToSendRelayMsg != NULL)
                 {
 					printf("Sending relay message to %s\n",idToSendRelayMsg);
-                    send_msg2(responder,idToSendRelayMsg,"RELAY",msgToRelay);
+                    send_msg2(responder,idToSendRelayMsg,RELAY,msgToRelay);
                 }
+
+                //telling the client that sent relay message to wait
+                send_msg(responder,identity,WAIT);
             }
             
             zstr_free(&identity);
