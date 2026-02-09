@@ -25,7 +25,8 @@ void test_connect(void)
     zsock_set_identity(requester, identity);
 
     // Now connect
-    zsock_connect(requester, "tcp://140.245.225.75:5555");
+    //zsock_connect(requester, "tcp://140.245.225.75:5555");
+    zsock_connect(requester, "tcp://127.0.0.1:5555");
     
     // Send message
     zstr_send(requester, "JOIN");
@@ -36,13 +37,13 @@ void test_connect(void)
 
 bool try_receive_reply(float deltaTime)
 {
-    timer += deltaTime;
-    if(timer < 1.0f)
-        return false;
-    timer = 0.0f;
+    //timer += deltaTime;
+    //if(timer < 1.0f)
+    //   return false;
+    //timer = 0.0f;
 
     char* reply = zstr_recv(requester);
-    if(reply != NULL && strcmp(reply,"START")==0)
+    if(reply != NULL)
     {
         printf("reply: %s\n", reply);
         return true;
