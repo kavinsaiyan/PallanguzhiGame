@@ -196,7 +196,15 @@ int main(void)
                 break;
             case MainMenu:
                 if(IsPlayButtonClicked(mousePosition))
+                {
                     gameStateData.state = PlayerMove;
+                    gameStateData.gameMode = SinglePlayer;
+                }
+                if(IsOnlinePlayButtonClicked(mousePosition))
+                {
+                    gameStateData.state = PlayerMove;
+                    gameStateData.gameMode = MultiPlayer;
+                }
                 if(IsExitButtonClicked(mousePosition))
                     exitWindow = true;
                 break;

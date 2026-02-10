@@ -18,6 +18,7 @@ const char* GetText(TextID text)
                 case AITurn: return "AI Turn";
                 case YouWon: return "You Won!";
                 case YouLost: return "You Lost!";
+                case OnlinePlay: return "Play Online";
                 default:
                     return "default text";
             }
@@ -34,6 +35,7 @@ const char* GetText(TextID text)
                 case AITurn: return "நண்பரின் முறை";
                 case YouWon: return "நீங்கள் வென்றீர்கள்!";
                 case YouLost: return "நீ தோற்றுவிட்டாய்";
+                case OnlinePlay: return "இணையத்தில் விளையாடு";
                 default:
                     return "இயல்புநிலை உரை";
             }

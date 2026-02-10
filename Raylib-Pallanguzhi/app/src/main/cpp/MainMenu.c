@@ -4,12 +4,16 @@
 #include "Translation.h"
 
 static Button playButton;
+static Button onlinePlayButton;
 static Button exitButton;
 
 void InitializeMainMenu(Sound* clickSound)
 {
     TextID play = Play;
-    InitButton(&playButton,400,300,140,50,play,clickSound);
+    InitButton(&playButton,400,220,140,50,play,clickSound);
+
+    TextID onlinePlay = OnlinePlay;
+    InitButton(&onlinePlayButton,400,300,140,50,onlinePlay,clickSound);
 
     TextID exit = Exit;
     InitButton(&exitButton,400,380,140,50,exit,clickSound);
@@ -28,6 +32,7 @@ void DrawMainMenu(Texture2D* bgTexture)
 
     bool drawButtonText = true;
     DrawButton(&playButton,drawButtonText);
+    DrawButton(&onlinePlayButton,drawButtonText);
     DrawButton(&exitButton,drawButtonText);
 }
 
@@ -41,6 +46,13 @@ bool IsPlayButtonClicked(Vector2 mousePosition)
 bool IsExitButtonClicked(Vector2 mousePosition)
 {
     if(IsButtonClicked(&exitButton,mousePosition))
+        return true;
+    return false;
+}
+
+bool IsOnlinePlayButtonClicked(Vector2 mousePosition)
+{
+    if(IsButtonClicked(&onlinePlayButton,mousePosition))
         return true;
     return false;
 }

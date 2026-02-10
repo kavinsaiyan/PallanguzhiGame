@@ -15,6 +15,8 @@ void DrawMainMenu(Texture2D* bgTexture);
 
 bool IsPlayButtonClicked(Vector2 mousePosition);
 
+bool IsOnlinePlayButtonClicked(Vector2 mousePosition);
+
 bool IsExitButtonClicked(Vector2 mousePosition);
 
 void InitializeMainMenuForDrawing();

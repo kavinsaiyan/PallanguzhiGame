@@ -21,11 +21,18 @@ typedef enum
     Player2Turn = 1,
 } PlayerTurn;
 
+typedef enum 
+{
+    SinglePlayer = 0,
+    MultiPlayer = 1
+} GameMode;
+
 typedef struct
 {
     GameState state;
     PlayerTurn playerTurn;
-    int playerWon; 
+    int playerWon;
+    GameMode gameMode;
 } GameStateData;
 
 void InitializeGameStateData(GameStateData* gameStateData, SaveData* saveData);
