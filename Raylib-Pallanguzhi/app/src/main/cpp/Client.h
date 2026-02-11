@@ -3,8 +3,17 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-void test_connect(void);
-bool try_receive_reply(float deltaTime);
+typedef enum 
+{
+    NoMessage,
+    Wait,
+    Start,
+    Relay
+} Message;
+
+void connect_to_server(void);
+bool try_receive_reply(float deltaTime, Message *msg, int *otherPlayerMoveIndex);
+void send_move_to_server(int currentIndex);
 void close_connection(void);
 
 #endif

@@ -5,10 +5,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-static float timer = 0.0f;
 static zsock_t* requester = NULL;
 
-void test_connect(void)
+const char* JOIN = "JOIN";
+const char* START = "START";
+const char* RELAY = "RELAY";
+const char* WAIT = "WAIT";
+
+void connect_to_server(void)
 {
     printf ("Connecting to relay server...\n");
     
@@ -29,29 +33,53 @@ void test_connect(void)
     zsock_connect(requester, "tcp://127.0.0.1:5555");
     
     // Send message
-    zstr_send(requester, "JOIN");
+    zstr_send(requester, JOIN);
     printf("message sent\n");
 
     zsock_set_rcvtimeo(requester, 1);
 }
 
-bool try_receive_reply(float deltaTime)
+bool try_receive_reply(float deltaTime, Message* msg, int* otherPlayerMoveIndex)
 {
-    //timer += deltaTime;
-    //if(timer < 1.0f)
-    //   return false;
-    //timer = 0.0f;
-
-    char* reply = zstr_recv(requester);
+    char *reply = zstr_recv(requester);
+    *msg = NoMessage;
+    *otherPlayerMoveIndex = -1;
     if(reply != NULL)
     {
-        printf("reply: %s\n", reply);
+        printf("reply: %s\n", reply); // only prints in PC, not in android
+
+        if(strcmp(reply,WAIT)==0)
+        {
+            //return the status for the clients which should be an enum
+            //there should be differentiation between waiting for other player to join and waiting for the connected other player's move
+            *msg = Wait;
+        }
+        else if(strcmp(reply,START)==0)
+        {
+            *msg = Start;
+        }
+        else if(strcmp(reply,RELAY)==0)
+        {
+            *msg = Relay;
+             char *otherPlayerMove = zstr_recv(requester);
+             if(otherPlayerMove != NULL)
+                 *otherPlayerMoveIndex = atoi(otherPlayerMove);     
+             zstr_free(&otherPlayerMove);
+        }
         return true;
     }
 
     if(reply != NULL)
         zstr_free(&reply);
     return false;
+}
+
+void send_move_to_server(int currentIndex)
+{
+    zstr_sendm(requester, RELAY);
+    char str[4];
+    snprintf(str,sizeof(str),"%d",currentIndex);
+    zstr_send(requester, str);
 }
 
 void close_connection(void)

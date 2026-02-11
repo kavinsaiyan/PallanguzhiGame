@@ -76,8 +76,10 @@ int main(void)
     float timer = 0;
     int indexOfBeadToMove;
 
-    //test connection
-    test_connect();
+    //connection to server
+    connect_to_server();
+    Message msg = NoMessage;
+    int otherPlayerMoveIndex = -1;
     
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -90,7 +92,7 @@ int main(void)
         Vector2 mousePosition = GetMousePosition();
 
         //test receive message
-        if(try_receive_reply(dt))
+        if(try_receive_reply(dt, &msg, &otherPlayerMoveIndex))
             TraceLog(LOG_INFO,"message received from server\n");
 
         // Check for window close
@@ -111,6 +113,10 @@ int main(void)
         {
             slotSelector.renderState = DontRender;
             StartMove(&gameStateData.state,&board,animQ,slotSelector.currentIndex);
+            if(gameStateData.gameMode == MultiPlayer)
+            {
+                send_move_to_server(slotSelector.currentIndex);
+            }
         }
 
         switch(gameStateData.state)
@@ -124,7 +130,7 @@ int main(void)
                     break;
                 }
 
-                if(gameStateData.playerTurn == Player2Turn)
+                if(gameStateData.gameMode == SinglePlayer && gameStateData.playerTurn == Player2Turn)
                 {
                     //AI move range (0,TOTAL_SLOTS/2)
                     //Need to know all indices that have beads in them
@@ -134,6 +140,11 @@ int main(void)
                     board.currentMoveIndex = arr->arr[rand];
                     TraceLog(LOG_INFO,"AI chooses %d slot index randomly and rand index is %d", arr->arr[rand], rand);
                     DestroyArray(arr);
+                    StartMove(&gameStateData.state,&board,animQ,board.currentMoveIndex);
+                }
+                else if(gameStateData.gameMode == MultiPlayer && gameStateData.playerTurn == Player2Turn && msg == Relay)
+                {
+                    board.currentMoveIndex = otherPlayerMoveIndex + 7;
                     StartMove(&gameStateData.state,&board,animQ,board.currentMoveIndex);
                 }
                 break;
@@ -202,7 +213,7 @@ int main(void)
                 }
                 if(IsOnlinePlayButtonClicked(mousePosition))
                 {
-                    gameStateData.state = PlayerMove;
+                    gameStateData.state = WaitingForOnlinePlayer;
                     gameStateData.gameMode = MultiPlayer;
                 }
                 if(IsExitButtonClicked(mousePosition))
@@ -216,6 +227,14 @@ int main(void)
                     WriteSaveData(&saveData);
                     gameStateData.state = MainMenu;
                     InitializeMainMenuForDrawing();
+                 }
+                 break;
+            case WaitingForOnlinePlayer:
+                 // receive result from the server
+                 if(msg == Wait || msg == Start)
+                 {
+                    gameStateData.state = PlayerMove;
+                    gameStateData.playerTurn = msg == Wait ? Player2Turn : Player1Turn;
                  }
                  break;
         }
@@ -238,6 +257,10 @@ int main(void)
                 break;
             case LanguageSelection:
                 DrawLanguageSelection();
+                break;
+            case WaitingForOnlinePlayer:
+                TextID textID = WaitingForOtherPlayer;
+                RenderText(textID,(Vector2){ .x = 100, .y = 100}, BLACK);
                 break;
         }
         EndDrawing();

@@ -19,6 +19,7 @@ const char* GetText(TextID text)
                 case YouWon: return "You Won!";
                 case YouLost: return "You Lost!";
                 case OnlinePlay: return "Play Online";
+                case WaitingForOtherPlayer: return "Waiting for another player";
                 default:
                     return "default text";
             }
@@ -36,6 +37,7 @@ const char* GetText(TextID text)
                 case YouWon: return "நீங்கள் வென்றீர்கள்!";
                 case YouLost: return "நீ தோற்றுவிட்டாய்";
                 case OnlinePlay: return "இணையத்தில் விளையாடு";
+                case WaitingForOtherPlayer: return "மற்றொரு நண்பருக்காக காத்திருங்கள்";
                 default:
                     return "இயல்புநிலை உரை";
             }

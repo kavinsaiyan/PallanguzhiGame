@@ -12,7 +12,8 @@ typedef enum
     Animating,
     GameOver,
     MainMenu,
-    LanguageSelection
+    LanguageSelection,
+    WaitingForOnlinePlayer
 } GameState;
 
 typedef enum 
