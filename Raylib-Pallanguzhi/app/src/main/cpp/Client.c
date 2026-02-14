@@ -11,6 +11,7 @@ const char* JOIN = "JOIN";
 const char* START = "START";
 const char* RELAY = "RELAY";
 const char* WAIT = "WAIT";
+const char* DISCONNECT = "DISCONNECT";
 
 void connect_to_server(void)
 {
@@ -84,5 +85,6 @@ void send_move_to_server(int currentIndex)
 
 void close_connection(void)
 {
+    zstr_send(requester, DISCONNECT);
     zsock_destroy(&requester);
 }

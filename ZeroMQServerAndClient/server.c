@@ -1,20 +1,24 @@
 #include <unistd.h>
 #include <czmq.h>
 
+#define MAX_ROOMS 1024
+
 typedef struct s_Room
 {
     char* client1;
     char* client2;
 } Room;
 
-Room rooms[1024] = { 0 };
+Room rooms[MAX_ROOMS] = { 0 };
 int roomCount = 0;
 int clientCount = 0;
 
-const char* RELAY = "RELAY";
-const char* JOIN = "JOIN";
-const char* WAIT = "WAIT";
-const char* MOVE = "MOVE";
+char* RELAY = "RELAY";
+char* JOIN = "JOIN";
+char* WAIT = "WAIT";
+char* DISCONNECT = "DISCONNECT";
+char* START = "START";
+char* ROOMS_FULL = "ROOMS_FULL";
 
 void send_msg(zsock_t *responder,char *identity, char *msg)
 {
@@ -39,6 +43,54 @@ char* GetOtherClient(char* identity)
             return rooms[i].client1;
     }
     return NULL;
+}
+
+void RemoveClient(zsock_t *responder,char* identity)
+{
+    for(int i = 0; i < roomCount; i++)
+    {
+        char* otherIdentity = NULL;
+        if(strcmp(identity,rooms[i].client1) == 0)
+            otherIdentity = rooms[i].client2;
+        else if (strcmp(identity,rooms[i].client2) == 0)
+            otherIdentity = rooms[i].client1;
+        if(otherIdentity != NULL)
+        {
+            send_msg(responder,otherIdentity, DISCONNECT);
+            printf("Removing room for clients : %s and %s\n",rooms[i].client1,rooms[i].client2);
+            free(rooms[i].client1);
+            free(rooms[i].client2);
+            return;
+        }
+    }
+}
+
+int GetWaitingRoomIndex()
+{
+    int index = -1;
+    for(int i = 0; i < MAX_ROOMS; i++)
+    {
+        if(rooms[i].client1 == NULL && rooms[i].client2 != NULL)
+        {
+            index = i;
+            break;
+        }
+    }
+    return index;
+}
+
+int GetFreeRoomIndex()
+{
+    int index = -1;
+    for(int i = 0; i < MAX_ROOMS; i++)
+    {
+        if(rooms[i].client1 == NULL && rooms[i].client2 == NULL)
+        {
+            index = i;
+            break;
+        }
+    }
+    return index;    
 }
 
 int main (void)
@@ -78,19 +130,29 @@ int main (void)
             {
                 if(clientCount % 2 == 0)
                 {
-                    roomCount++;
-                    rooms[roomCount-1].client1 = strdup(identity);
-                    send_msg(responder, identity,WAIT);
+                    int freeRoomIdx = GetFreeRoomIndex();
+                    if(freeRoomIdx == -1)
+                        send_msg(responder, identity,ROOMS_FULL);
+                    else
+                    {
+                        rooms[freeRoomIdx].client1 = strdup(identity);
+                        send_msg(responder, identity,WAIT);
+                    }
                 }
                 else 
                 {
-                    rooms[roomCount-1].client2 = strdup(identity);
-                    send_msg(responder, identity,WAIT);
-
-                    send_msg(responder, rooms[roomCount-1].client1, MOVE); 
+                    int waitingRoomIdx = GetWaitingRoomIndex();
+                    if(waitingRoomIdx == -1)
+                        send_msg(responder, identity,ROOMS_FULL);
+                    else 
+                    {
+                        rooms[waitingRoomIdx].client2 = strdup(identity);
+                        send_msg(responder, identity,WAIT);
+                        
+                        send_msg(responder, rooms[waitingRoomIdx].client1, START); 
+                    }
                 }
                 printf("Sending WAIT to: %s who is client no: %d\n", identity, clientCount);
-                
                 clientCount++;
             }
             else if(strcmp(msg,RELAY) == 0)
@@ -115,6 +177,10 @@ int main (void)
                 //telling the client that sent relay message to wait
                 send_msg(responder,identity,WAIT);
             }
+            else if(strcmp(msg, DISCONNECT) == 0)
+            {
+                RemoveClient(responder,identity);
+            }
             
             zstr_free(&identity);
             zstr_free(&msg);
@@ -132,6 +198,6 @@ int main (void)
     zpoller_destroy(&poller);
     zsock_destroy(&responder);
     printf("Server shutdown complete.\n");
-    
+
     return 0;
 }
