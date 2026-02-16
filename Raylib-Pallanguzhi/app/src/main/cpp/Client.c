@@ -8,8 +8,8 @@
 static zsock_t* requester = NULL;
 
 const char* JOIN = "JOIN";
-const char* FIRST_TURN = "FIRST_TURN";
-const char* SECOND_TURN = "SECOND_TURN";
+const char* YOUR_TURN = "YOUR_TURN";
+const char* WAIT_FOR_TURN = "WAIT_FOR_TURN";
 const char* RELAY = "RELAY";
 const char* WAIT = "WAIT";
 const char* DISCONNECT = "DISCONNECT";
@@ -59,13 +59,13 @@ bool try_receive_reply(float deltaTime, Message* msg, int* otherPlayerMoveIndex)
         {
             *msg = Wait;
         }
-        else if(strcmp(reply,FIRST_TURN)==0)
+        else if(strcmp(reply,YOUR_TURN)==0)
         {
-            *msg = FirstTurn;
+            *msg = YourTurnMsg;
         }
-        else if(strcmp(reply,SECOND_TURN)==0)
+        else if(strcmp(reply,WAIT_FOR_TURN)==0)
         {
-            *msg = SecondTurn;
+            *msg = WaitForTurn;
         }
         else if(strcmp(reply,RELAY)==0)
         {

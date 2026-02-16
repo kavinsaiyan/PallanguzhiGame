@@ -7,8 +7,8 @@ typedef enum
 {
     NoMessage,
     Wait,
-    FirstTurn,
-    SecondTurn,
+    YourTurnMsg,
+    WaitForTurn,
     Relay
 } Message;
 

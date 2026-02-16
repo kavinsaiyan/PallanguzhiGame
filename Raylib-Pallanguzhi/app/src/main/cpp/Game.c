@@ -143,7 +143,8 @@ int main(void)
                 }
                 else if(gameStateData.gameMode == MultiPlayer && gameStateData.playerTurn == Player2Turn && msg == Relay)
                 {
-                    board.currentMoveIndex = otherPlayerMoveIndex + 7;
+                    TraceLog(LOG_INFO,"received move is %d\n",otherPlayerMoveIndex);
+                    board.currentMoveIndex = (int)Wrap(otherPlayerMoveIndex - 7,0,TOTAL_SLOTS/2);
                     StartMove(&gameStateData.state,&board,animQ,board.currentMoveIndex);
                 }
                 break;
@@ -231,11 +232,11 @@ int main(void)
                  break;
             case WaitingForOnlinePlayer:
                  // receive result from the server
-                 if(msg == SecondTurn || msg == FirstTurn)
+                 if(msg == WaitForTurn || msg == YourTurnMsg)
                  {
                     TraceLog(LOG_INFO,"msg received is %d\n",msg);
                     gameStateData.state = PlayerMove;
-                    gameStateData.playerTurn = msg == FirstTurn ? Player2Turn : Player1Turn;
+                    gameStateData.playerTurn = msg == YourTurnMsg ? Player1Turn : Player2Turn;
                  }
                  break;
         }
