@@ -77,7 +77,6 @@ int main(void)
     int indexOfBeadToMove;
 
     //connection to server
-    connect_to_server();
     Message msg = NoMessage;
     int otherPlayerMoveIndex = -1;
     
@@ -213,6 +212,7 @@ int main(void)
                 }
                 if(IsOnlinePlayButtonClicked(mousePosition))
                 {
+                    connect_to_server();
                     gameStateData.state = WaitingForOnlinePlayer;
                     gameStateData.gameMode = MultiPlayer;
                 }
@@ -231,10 +231,11 @@ int main(void)
                  break;
             case WaitingForOnlinePlayer:
                  // receive result from the server
-                 if(msg == Wait || msg == Start)
+                 if(msg == SecondTurn || msg == FirstTurn)
                  {
+                    TraceLog(LOG_INFO,"msg received is %d\n",msg);
                     gameStateData.state = PlayerMove;
-                    gameStateData.playerTurn = msg == Wait ? Player2Turn : Player1Turn;
+                    gameStateData.playerTurn = msg == FirstTurn ? Player2Turn : Player1Turn;
                  }
                  break;
         }
@@ -259,8 +260,9 @@ int main(void)
                 DrawLanguageSelection();
                 break;
             case WaitingForOnlinePlayer:
+                ClearBackground(RAYWHITE);
                 TextID textID = WaitingForOtherPlayer;
-                RenderText(textID,(Vector2){ .x = 100, .y = 100}, BLACK);
+                RenderText(textID,(Vector2){ .x = 100, .y = 260}, BLACK);
                 break;
         }
         EndDrawing();

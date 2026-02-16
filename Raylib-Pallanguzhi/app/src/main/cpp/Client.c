@@ -8,7 +8,8 @@
 static zsock_t* requester = NULL;
 
 const char* JOIN = "JOIN";
-const char* START = "START";
+const char* FIRST_TURN = "FIRST_TURN";
+const char* SECOND_TURN = "SECOND_TURN";
 const char* RELAY = "RELAY";
 const char* WAIT = "WAIT";
 const char* DISCONNECT = "DISCONNECT";
@@ -37,27 +38,34 @@ void connect_to_server(void)
     zstr_send(requester, JOIN);
     printf("message sent\n");
 
-    zsock_set_rcvtimeo(requester, 1);
+    zsock_set_rcvtimeo(requester, 0);
 }
 
 bool try_receive_reply(float deltaTime, Message* msg, int* otherPlayerMoveIndex)
 {
-    char *reply = zstr_recv(requester);
     *msg = NoMessage;
     *otherPlayerMoveIndex = -1;
+
+    if(requester == NULL)
+        return false;
+
+    char *reply = zstr_recv(requester);
+    bool res = false;
     if(reply != NULL)
     {
         printf("reply: %s\n", reply); // only prints in PC, not in android
 
         if(strcmp(reply,WAIT)==0)
         {
-            //return the status for the clients which should be an enum
-            //there should be differentiation between waiting for other player to join and waiting for the connected other player's move
             *msg = Wait;
         }
-        else if(strcmp(reply,START)==0)
+        else if(strcmp(reply,FIRST_TURN)==0)
         {
-            *msg = Start;
+            *msg = FirstTurn;
+        }
+        else if(strcmp(reply,SECOND_TURN)==0)
+        {
+            *msg = SecondTurn;
         }
         else if(strcmp(reply,RELAY)==0)
         {
@@ -67,12 +75,16 @@ bool try_receive_reply(float deltaTime, Message* msg, int* otherPlayerMoveIndex)
                  *otherPlayerMoveIndex = atoi(otherPlayerMove);     
              zstr_free(&otherPlayerMove);
         }
-        return true;
+        else if(strcmp(reply,DISCONNECT)==0)
+        {
+            printf("Handle the disconnect!\n");
+        }
+        res = true;
     }
 
     if(reply != NULL)
         zstr_free(&reply);
-    return false;
+    return res;
 }
 
 void send_move_to_server(int currentIndex)

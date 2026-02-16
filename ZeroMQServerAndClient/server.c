@@ -17,7 +17,8 @@ char* RELAY = "RELAY";
 char* JOIN = "JOIN";
 char* WAIT = "WAIT";
 char* DISCONNECT = "DISCONNECT";
-char* START = "START";
+char* FIRST_TURN = "FIRST_TURN";
+char* SECOND_TURN = "SECOND_TURN";
 char* ROOMS_FULL = "ROOMS_FULL";
 
 void send_msg(zsock_t *responder,char *identity, char *msg)
@@ -70,7 +71,7 @@ int GetWaitingRoomIndex()
     int index = -1;
     for(int i = 0; i < MAX_ROOMS; i++)
     {
-        if(rooms[i].client1 == NULL && rooms[i].client2 != NULL)
+        if(rooms[i].client1 != NULL && rooms[i].client2 == NULL)
         {
             index = i;
             break;
@@ -137,6 +138,7 @@ int main (void)
                     {
                         rooms[freeRoomIdx].client1 = strdup(identity);
                         send_msg(responder, identity,WAIT);
+                        printf("Sending WAIT to: %s who is client no: %d\n", identity, clientCount);
                     }
                 }
                 else 
@@ -147,12 +149,14 @@ int main (void)
                     else 
                     {
                         rooms[waitingRoomIdx].client2 = strdup(identity);
-                        send_msg(responder, identity,WAIT);
+                        send_msg(responder, identity, SECOND_TURN);
                         
-                        send_msg(responder, rooms[waitingRoomIdx].client1, START); 
+                        send_msg(responder, rooms[waitingRoomIdx].client1, FIRST_TURN); 
+
+                        printf("Sending FIRST_TURN to :%s\n", rooms[waitingRoomIdx].client1);
+                        printf("Sending SECOND_TURN to :%s\n", rooms[waitingRoomIdx].client2);
                     }
                 }
-                printf("Sending WAIT to: %s who is client no: %d\n", identity, clientCount);
                 clientCount++;
             }
             else if(strcmp(msg,RELAY) == 0)
