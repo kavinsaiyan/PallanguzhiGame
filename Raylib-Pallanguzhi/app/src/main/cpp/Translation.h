@@ -16,7 +16,8 @@ typedef enum
     YouWon,
     YouLost,
     OnlinePlay,
-    WaitingForOtherPlayer
+    WaitingForOtherPlayer,
+    GoToHomePage
 } TextID;
 
 const char* GetText(TextID textID);

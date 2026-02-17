@@ -14,6 +14,13 @@ const char* RELAY = "RELAY";
 const char* WAIT = "WAIT";
 const char* DISCONNECT = "DISCONNECT";
 
+void free_socket()
+{
+    if(requester != NULL)
+        zsock_destroy(&requester);
+    requester = NULL;   
+}
+
 void connect_to_server(void)
 {
     printf ("Connecting to relay server...\n");
@@ -70,14 +77,16 @@ bool try_receive_reply(float deltaTime, Message* msg, int* otherPlayerMoveIndex)
         else if(strcmp(reply,RELAY)==0)
         {
             *msg = Relay;
-             char *otherPlayerMove = zstr_recv(requester);
-             if(otherPlayerMove != NULL)
-                 *otherPlayerMoveIndex = atoi(otherPlayerMove);     
-             zstr_free(&otherPlayerMove);
+            char *otherPlayerMove = zstr_recv(requester);
+            if(otherPlayerMove != NULL)
+                *otherPlayerMoveIndex = atoi(otherPlayerMove);     
+            zstr_free(&otherPlayerMove);
         }
         else if(strcmp(reply,DISCONNECT)==0)
         {
             printf("Handle the disconnect!\n");
+            *msg = Disconnect;
+            free_socket();
         }
         res = true;
     }
@@ -97,6 +106,10 @@ void send_move_to_server(int currentIndex)
 
 void close_connection(void)
 {
-    zstr_send(requester, DISCONNECT);
-    zsock_destroy(&requester);
+    if(requester)
+    {
+        printf("sendind the disconnect message to server!\n");
+        zstr_send(requester, DISCONNECT);
+    }
+    free_socket();
 }

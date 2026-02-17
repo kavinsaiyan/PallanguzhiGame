@@ -90,9 +90,16 @@ int main(void)
         float dt = GetFrameTime();
         Vector2 mousePosition = GetMousePosition();
 
-        //test receive message
+        //Receive message
         if(try_receive_reply(dt, &msg, &otherPlayerMoveIndex))
             TraceLog(LOG_INFO,"message received from server\n");
+
+        //Handle Disconnect
+        if(gameStateData.gameMode == MultiPlayer && msg == Disconnect)
+        {
+            TraceLog(LOG_INFO,"Received Disconnect message!");
+            OpenMainMenu(&gameStateData);
+        }
 
         // Check for window close
         if(IsKeyPressed(KEY_ESCAPE) || WindowShouldClose()) exitWindow = true;
@@ -141,9 +148,9 @@ int main(void)
                     DestroyArray(arr);
                     StartMove(&gameStateData.state,&board,animQ,board.currentMoveIndex);
                 }
-                else if(gameStateData.gameMode == MultiPlayer && gameStateData.playerTurn == Player2Turn && msg == Relay)
+                else if(gameStateData.gameMode == MultiPlayer && msg == Relay && gameStateData.playerTurn == Player2Turn)
                 {
-                    TraceLog(LOG_INFO,"received move is %d\n",otherPlayerMoveIndex);
+                    //TraceLog(LOG_INFO,"received move is %d\n",otherPlayerMoveIndex);
                     board.currentMoveIndex = (int)Wrap(otherPlayerMoveIndex - 7,0,TOTAL_SLOTS/2);
                     StartMove(&gameStateData.state,&board,animQ,board.currentMoveIndex);
                 }
@@ -204,6 +211,10 @@ int main(void)
                     slotSelector.renderState = Render;
                     InitializeBoard(&board);
                 }
+
+                if(IsGoToHomePageButtonClicked(mousePosition))
+                    OpenMainMenu(&gameStateData);
+
                 break;
             case MainMenu:
                 if(IsPlayButtonClicked(mousePosition))
@@ -226,8 +237,7 @@ int main(void)
                  {
                     saveData.languageSelected = selected;
                     WriteSaveData(&saveData);
-                    gameStateData.state = MainMenu;
-                    InitializeMainMenuForDrawing();
+                    OpenMainMenu(&gameStateData);
                  }
                  break;
             case WaitingForOnlinePlayer:
@@ -236,7 +246,16 @@ int main(void)
                  {
                     TraceLog(LOG_INFO,"msg received is %d\n",msg);
                     gameStateData.state = PlayerMove;
-                    gameStateData.playerTurn = msg == YourTurnMsg ? Player1Turn : Player2Turn;
+                    if(msg == YourTurnMsg)
+                    {
+                        gameStateData.playerTurn = Player1Turn;
+                        slotSelector.renderState = Render;
+                    }
+                    else 
+                    {
+                        gameStateData.playerTurn = Player2Turn;
+                        slotSelector.renderState = DontRender;
+                    }
                  }
                  break;
         }
@@ -252,7 +271,8 @@ int main(void)
                 DrawBoardGame(&board,&slotSelector,&boardTexture,&ballTexture,&slotSelectorTexture, gameStateData.playerTurn);
                 break;
             case GameOver:
-                DrawEndScreen(board.player1Score,board.player2Score,gameStateData.playerWon);
+                bool drawGoToHomeButtonOnly = gameStateData.gameMode == MultiPlayer;
+                DrawEndScreen(board.player1Score,board.player2Score,gameStateData.playerWon,drawGoToHomeButtonOnly);
                 break;
             case MainMenu:
                 DrawMainMenu(&mainMenuBGTexture);
@@ -302,10 +322,7 @@ void InitializeGameStateData(GameStateData* gameStateData, SaveData* saveData)
     if(saveData->languageSelected == DefaultLanguage)
         gameStateData->state = LanguageSelection;
     else
-    {
-        InitializeMainMenuForDrawing();
-        gameStateData->state = MainMenu;
-    }
+        OpenMainMenu(gameStateData);
 }
 
 void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex)
@@ -334,4 +351,10 @@ void DrawBoardGame(Board* board,SlotSelector* slotSelector, Texture2D* boardText
     
     playerScorePos.y += 40;
     RenderTextDirect(TextFormat(GetText(AIScore),board->player2Score),playerScorePos,BLACK);
+}
+
+void OpenMainMenu(GameStateData* gameStateData)
+{
+    gameStateData->state = MainMenu;
+    InitializeMainMenuForDrawing();
 }

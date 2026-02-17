@@ -7,7 +7,9 @@ void InitializeEndScreen(Sound* clickSound);
 
 void PrepareEndScreenForDrawing();
 
-void DrawEndScreen(int player1Score, int player2Score, int playerWon);
+void DrawEndScreen(int player1Score, int player2Score, int playerWon, bool drawGoToHomePageButton);
 
 bool IsRetryButtonClicked(Vector2 mousePosition);
+
+bool IsGoToHomePageButtonClicked(Vector2 mousePosition);
 #endif

@@ -9,7 +9,8 @@ typedef enum
     Wait,
     YourTurnMsg,
     WaitForTurn,
-    Relay
+    Relay,
+    Disconnect
 } Message;
 
 void connect_to_server(void);

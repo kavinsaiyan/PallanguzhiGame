@@ -123,10 +123,10 @@ int main (void)
         if (which == responder)
         {
             char *identity = zstr_recv(responder);
-            if (!identity) continue;
+            if (!identity || strlen(identity) > 32) continue;
 
             char *msg = zstr_recv(responder);
-            if (!msg) {
+            if (!msg || strlen(msg) > 16) {
                 zstr_free(&identity);
                 continue;
             }
@@ -170,9 +170,9 @@ int main (void)
                 //need to receive the next message to be relayed
                 printf("receiving the relay move index\n");
                 char *msgToRelay = zstr_recv(responder);
-                if(msgToRelay == NULL)
+                if(msgToRelay == NULL || strlen(msgToRelay) > 8)
                 {
-                    printf("no message to Relay\n");
+                    printf("No message to Relay\n");
                     zstr_free(&identity);
                     zstr_free(&msg);
                     continue;
@@ -193,6 +193,7 @@ int main (void)
             }
             else if(strcmp(msg, DISCONNECT) == 0)
             {
+                printf("received Disconnect message\n");
                 RemoveClient(responder,identity);
             }
             

@@ -39,4 +39,5 @@ typedef struct
 void InitializeGameStateData(GameStateData* gameStateData, SaveData* saveData);
 void StartMove(GameState* gameState,Board* board, Queue* animQ, int currentIndex);
 void DrawBoardGame(Board* board,SlotSelector* slotSelector, Texture2D* boardTexture, Texture2D* ballTexture, Texture2D* slotSelectorTexture, PlayerTurn playerTurn);
+void OpenMainMenu(GameStateData* gamestate);
 #endif
