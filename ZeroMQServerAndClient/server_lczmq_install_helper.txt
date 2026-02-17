@@ -1,0 +1,14 @@
+sudo apt update
+sudo apt install build-essential libzmq3-dev libczmq-dev
+
+# To start the server and set it to run in background
+nohup ./server &
+
+# To check output
+tail -f nohup.out
+
+# To check if the server process is running
+ps aux | grep server
+
+# To check if any process is using the port 5555
+ss -tulnp | grep 5555
