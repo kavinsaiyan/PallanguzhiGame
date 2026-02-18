@@ -84,10 +84,8 @@ android {
                 arguments "-DPLATFORM=Android",
                           "-DBUILD_EXAMPLES=OFF",
                           "-DAPP_LIB_NAME=$nativeLibName",
-                          "-DGL_VERSION=$glVersion"
-             	
-             	//path "src/main/cpp/CMakeLists.txt"
-             	//version "4.2.1"
+                          "-DGL_VERSION=$glVersion",
+                          "-DSERVER_URL=${localProperties.getProperty('SERVER_URL', 'tcp://localhost:5555')}"
             }
         }
     }

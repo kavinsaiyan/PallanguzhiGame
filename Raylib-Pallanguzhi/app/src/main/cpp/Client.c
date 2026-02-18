@@ -5,6 +5,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#ifndef SERVER_URL
+#define SERVER_URL "tcp://127.0.0.1:5555"
+#endif
+
 static zsock_t* requester = NULL;
 
 const char* JOIN = "JOIN";
@@ -38,8 +42,7 @@ void connect_to_server(void)
     zsock_set_identity(requester, identity);
 
     // Now connect
-    //zsock_connect(requester, "tcp://140.245.225.75:5555");
-    zsock_connect(requester, "tcp://127.0.0.1:5555");
+    zsock_connect(requester, SERVER_URL);
     
     // Send message
     zstr_send(requester, JOIN);

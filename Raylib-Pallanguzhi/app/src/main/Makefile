@@ -1,6 +1,9 @@
+# Server URL (set via environment variable, never hardcode here)
+SERVER_URL ?= tcp://localhost:5555
+
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -std=c99 -I/usr/local/include/freetype2 -I/usr/local/include/harfbuzz
+CFLAGS = -Wall -std=c99 -I/usr/local/include/freetype2 -I/usr/local/include/harfbuzz -DSERVER_URL=\"$(SERVER_URL)\"
 LDFLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -L/usr/local/lib -lfreetype -lharfbuzz -lczmq
 
 # Output file

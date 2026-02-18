@@ -72,6 +72,8 @@ add_library(${APP_LIB_NAME} SHARED ${SOURCES})
 
 # Define compiler macros for the library
 target_compile_definitions(${APP_LIB_NAME} PRIVATE PLATFORM_ANDROID)
+target_compile_definitions(${APP_LIB_NAME} PRIVATE PLATFORM_ANDROID)
+target_compile_definitions(${APP_LIB_NAME} PRIVATE SERVER_URL="${SERVER_URL}")
 
 # Apply flags depending on the build type
 if(CMAKE_BUILD_TYPE MATCHES "Debug")

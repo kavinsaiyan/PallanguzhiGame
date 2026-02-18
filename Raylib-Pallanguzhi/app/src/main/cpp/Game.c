@@ -271,8 +271,7 @@ int main(void)
                 DrawBoardGame(&board,&slotSelector,&boardTexture,&ballTexture,&slotSelectorTexture, gameStateData.playerTurn);
                 break;
             case GameOver:
-                bool drawGoToHomeButtonOnly = gameStateData.gameMode == MultiPlayer;
-                DrawEndScreen(board.player1Score,board.player2Score,gameStateData.playerWon,drawGoToHomeButtonOnly);
+                DrawEndScreen(board.player1Score,board.player2Score,gameStateData.playerWon,gameStateData.gameMode == MultiPlayer);
                 break;
             case MainMenu:
                 DrawMainMenu(&mainMenuBGTexture);
