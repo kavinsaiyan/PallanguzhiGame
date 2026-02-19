@@ -50,23 +50,34 @@ void RemoveClient(zsock_t *responder,char* identity)
 {
     for(int i = 0; i < MAX_ROOMS; i++)
     {
-        char* otherIdentity = NULL;
         if(rooms[i].client1 != NULL && strcmp(identity,rooms[i].client1) == 0)
-            otherIdentity = rooms[i].client2;
-        else if (rooms[i].client2 != NULL && strcmp(identity,rooms[i].client2) == 0)
-            otherIdentity = rooms[i].client1;
-        if(otherIdentity != NULL)
         {
-            send_msg(responder,otherIdentity, DISCONNECT);
-            printf("Removing room for clients : %s and %s\n",rooms[i].client1,rooms[i].client2);
-
-            if(rooms[i].client1 != NULL)
-                free(rooms[i].client1);
+            printf("Removing room for client1 : %s\n",rooms[i].client1);
+            free(rooms[i].client1);
             rooms[i].client1 = NULL;
+            clientCount--;
 
             if(rooms[i].client2 != NULL)
+            {
+                send_msg(responder,rooms[i].client2, DISCONNECT);
                 free(rooms[i].client2);
+                rooms[i].client2 = NULL;
+            }
+            return;
+        }
+        else if (rooms[i].client2 != NULL && strcmp(identity,rooms[i].client2) == 0)
+        {
+            printf("Removing room for client2 : %s\n",rooms[i].client2);
+            free(rooms[i].client2);
             rooms[i].client2 = NULL;
+            clientCount--;
+
+            if(rooms[i].client1 != NULL)
+            {
+                send_msg(responder,rooms[i].client1, DISCONNECT);
+                free(rooms[i].client1);
+                rooms[i].client1 = NULL;
+            }
             return;
         }
     }
