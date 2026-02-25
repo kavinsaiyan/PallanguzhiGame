@@ -6,7 +6,9 @@
 typedef struct s_Room
 {
     char* client1;
+    int64_t c1_last_seen;
     char* client2;
+    int64_t c2_last_seen;
 } Room;
 
 Room rooms[MAX_ROOMS] = { 0 };
@@ -20,6 +22,7 @@ char* DISCONNECT = "DISCONNECT";
 char* YOUR_TURN = "YOUR_TURN";
 char* WAIT_FOR_TURN = "WAIT_FOR_TURN";
 char* ROOMS_FULL = "ROOMS_FULL";
+char* HEARTBEAT = "HEARTBEAT";
 
 void send_msg(zsock_t *responder,char *identity, char *msg)
 {
@@ -33,7 +36,6 @@ void send_msg2(zsock_t *responder,char *identity, char *msg, char *msg2)
     zstr_sendm(responder,msg);
     zstr_send(responder,msg2);
 }
-
 char* GetOtherClient(char* identity)
 {
     for(int i = 0; i < MAX_ROOMS; i++)
@@ -112,7 +114,29 @@ int GetFreeRoomIndex()
             break;
         }
     }
-    return index;    
+    return index;
+}
+
+void CheckHeartBeatAndRemoveClients(zsock_t* responder, int64_t now)
+{
+    for(int i=0;i < MAX_ROOMS; i++)
+    {
+        if(rooms[i].client1 != NULL && (now - rooms[i].c1_last_seen) > 10000)
+            RemoveClient(responder,rooms[i].client1);
+        else if(rooms[i].client2 != NULL && (now - rooms[i].c2_last_seen) > 10000)
+            RemoveClient(responder,rooms[i].client2);
+    }
+}
+
+void UpdateLastSeen(char* identity, int64_t now)
+{
+    for(int i=0;i < MAX_ROOMS; i++)
+    {
+        if(rooms[i].client1 != NULL && strcmp(identity, rooms[i].client1) == 0)
+            rooms[i].c1_last_seen = now;
+        if(rooms[i].client2 != NULL && strcmp(identity, rooms[i].client2) == 0)
+            rooms[i].c2_last_seen = now;
+    }
 }
 
 int main (void)
@@ -125,11 +149,11 @@ int main (void)
     printf("Press Ctrl+C to shutdown gracefully\n");
     
     zpoller_t *poller = zpoller_new(responder, NULL);
+
     
     while (!zsys_interrupted)
     {
-        zsock_t *which = (zsock_t *)zpoller_wait(poller, 60);
-        
+        zsock_t *which = (zsock_t *)zpoller_wait(poller, 0);
         if (which == NULL) {
             // Timeout or interrupted
             continue;
@@ -137,6 +161,9 @@ int main (void)
         
         if (which == responder)
         {
+            int64_t now = zclock_mono();
+            CheckHeartBeatAndRemoveClients(responder,now);
+
             char *identity = zstr_recv(responder);
             if (!identity || strlen(identity) > 32) continue;
 
@@ -147,6 +174,10 @@ int main (void)
             }
             
             printf("Got identity: '%s', msg: '%s'\n", identity, msg);
+
+            bool updateHeartBeat = false;
+            if(strcmp(msg, HEARTBEAT) == 0)
+                updateHeartBeat = true;
             
             if(strcmp(msg, JOIN) == 0)
             {
@@ -160,6 +191,7 @@ int main (void)
                         rooms[freeRoomIdx].client1 = strdup(identity);
                         send_msg(responder, identity,WAIT);
                         printf("Sending WAIT to: %s who is client no: %d\n", identity, clientCount);
+                        updateHeartBeat = true;
                     }
                 }
                 else 
@@ -176,6 +208,8 @@ int main (void)
 
                         printf("Sending YOUR_TURN to :%s\n", rooms[waitingRoomIdx].client1);
                         printf("Sending WAIT_FOR_TURN to :%s\n", rooms[waitingRoomIdx].client2);
+
+                        updateHeartBeat = true;
                     }
                 }
                 clientCount++;
@@ -205,12 +239,17 @@ int main (void)
 
                 //telling the client that sent relay message to wait
                 send_msg(responder,identity, WAIT_FOR_TURN);
+                updateHeartBeat = true;
             }
             else if(strcmp(msg, DISCONNECT) == 0)
             {
                 printf("received Disconnect message\n");
                 RemoveClient(responder,identity);
             }
+
+            if(updateHeartBeat)
+                UpdateLastSeen(identity,now);
+                
             
             zstr_free(&identity);
             zstr_free(&msg);

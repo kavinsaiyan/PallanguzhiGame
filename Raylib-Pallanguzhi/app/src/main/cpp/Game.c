@@ -93,6 +93,7 @@ int main(void)
         //Receive message
         if(try_receive_reply(dt, &msg, &otherPlayerMoveIndex))
             TraceLog(LOG_INFO,"message received from server\n");
+        send_heartbeat();
 
         //Handle Disconnect
         if(gameStateData.gameMode == MultiPlayer && msg == Disconnect)

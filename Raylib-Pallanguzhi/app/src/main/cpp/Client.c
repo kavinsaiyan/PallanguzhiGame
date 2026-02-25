@@ -11,12 +11,15 @@
 
 static zsock_t* requester = NULL;
 
+static int64_t last_sent = 0;
+
 const char* JOIN = "JOIN";
 const char* YOUR_TURN = "YOUR_TURN";
 const char* WAIT_FOR_TURN = "WAIT_FOR_TURN";
 const char* RELAY = "RELAY";
 const char* WAIT = "WAIT";
 const char* DISCONNECT = "DISCONNECT";
+const char* HEARTBEAT = "HEARTBEAT";
 
 void free_socket()
 {
@@ -97,6 +100,19 @@ bool try_receive_reply(float deltaTime, Message* msg, int* otherPlayerMoveIndex)
     if(reply != NULL)
         zstr_free(&reply);
     return res;
+}
+
+void send_heartbeat()
+{
+    if(requester == NULL)
+        return;
+
+    int64_t now = zclock_mono();
+    if(now - last_sent > 3000)
+    {
+        zstr_send(requester, HEARTBEAT);
+        last_sent = now;
+    }
 }
 
 void send_move_to_server(int currentIndex)
