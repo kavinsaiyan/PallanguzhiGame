@@ -121,9 +121,14 @@ void CheckHeartBeatAndRemoveClients(zsock_t* responder, int64_t now)
 {
     for(int i=0;i < MAX_ROOMS; i++)
     {
-        if(rooms[i].client1 != NULL && (now - rooms[i].c1_last_seen) > 10000)
-            RemoveClient(responder,rooms[i].client1);
-        else if(rooms[i].client2 != NULL && (now - rooms[i].c2_last_seen) > 10000)
+        if(rooms[i].client1 != NULL)
+        {
+            int64_t diff = (now - rooms[i].c1_last_seen);
+            //printf("client 1 time is %ld\n",diff);
+            if(diff > 10000)
+                RemoveClient(responder,rooms[i].client1);
+        }
+        if(rooms[i].client2 != NULL && (now - rooms[i].c2_last_seen) > 10000)
             RemoveClient(responder,rooms[i].client2);
     }
 }
@@ -150,10 +155,13 @@ int main (void)
     
     zpoller_t *poller = zpoller_new(responder, NULL);
 
-    
     while (!zsys_interrupted)
     {
-        zsock_t *which = (zsock_t *)zpoller_wait(poller, 0);
+        zsock_t *which = (zsock_t *)zpoller_wait(poller, 2800);
+
+        int64_t now = zclock_mono();
+        CheckHeartBeatAndRemoveClients(responder,now);
+
         if (which == NULL) {
             // Timeout or interrupted
             continue;
@@ -161,9 +169,6 @@ int main (void)
         
         if (which == responder)
         {
-            int64_t now = zclock_mono();
-            CheckHeartBeatAndRemoveClients(responder,now);
-
             char *identity = zstr_recv(responder);
             if (!identity || strlen(identity) > 32) continue;
 
@@ -178,8 +183,7 @@ int main (void)
             bool updateHeartBeat = false;
             if(strcmp(msg, HEARTBEAT) == 0)
                 updateHeartBeat = true;
-            
-            if(strcmp(msg, JOIN) == 0)
+            else if(strcmp(msg, JOIN) == 0)
             {
                 if(clientCount % 2 == 0)
                 {
@@ -189,6 +193,7 @@ int main (void)
                     else
                     {
                         rooms[freeRoomIdx].client1 = strdup(identity);
+                        rooms[freeRoomIdx].c1_last_seen = now;
                         send_msg(responder, identity,WAIT);
                         printf("Sending WAIT to: %s who is client no: %d\n", identity, clientCount);
                         updateHeartBeat = true;
@@ -202,6 +207,8 @@ int main (void)
                     else 
                     {
                         rooms[waitingRoomIdx].client2 = strdup(identity);
+                        rooms[waitingRoomIdx].c2_last_seen = now;
+
                         send_msg(responder, identity, WAIT_FOR_TURN);
                         
                         send_msg(responder, rooms[waitingRoomIdx].client1, YOUR_TURN); 
@@ -249,7 +256,6 @@ int main (void)
 
             if(updateHeartBeat)
                 UpdateLastSeen(identity,now);
-                
             
             zstr_free(&identity);
             zstr_free(&msg);
